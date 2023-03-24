@@ -58,11 +58,13 @@ paths:
         ファイルの扱い
         - mime_typeのチェックから、ファイルタイプを特定し保存する
         - 保存するディレクトリは、ドキュメントのタイプで区切って保存すること
-          - 例： /pdf/api_公開用設計書.pdf
+        - ファイル名は、重複しないようにuuidを生成してファイル名として管理する
+        - 元のファイル名はそのままDBで保持しておくこと
+          - 例： /pdf/josdjXd9-skdjsi.pdf
 
         登録後
         - レスポンスは、登録した内容を出力すること
-        - ドキュメントNoは必ず暗号化して出力すること
+        - 文書番号はファイル保存時に生成したuuidを使用する
 
         例外処理
         - 例外種類に応じて、Response例の通りに返すこと
@@ -123,7 +125,7 @@ paths:
     get:
       tags:
         - 文書
-      summary: 文書属性(ファイル名、説明文)を取得
+      summary: 文書属性を取得
       description: |
         入力チェック
         - 文書属性のキーとバリューが必須であること
@@ -136,7 +138,7 @@ paths:
             - message: 検索した結果、文書がみつかりませんでした
 
         検索して合致した場合
-        - ドキュメントNoは必ず暗号化して出力すること
+        - 文書番号はファイル保存時に生成したuuidを使用する
         - 文書属性は、登録した分だけ出力する
 
         例外処理
@@ -156,6 +158,136 @@ paths:
           content:
             application/json:
               schema:
+                $ref: "#/components/schemas/documents_detail"
+        "400":
+          description: Invalid ID supplied
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: "#/components/schemas/400"
+        "404":
+          description: Documents not found
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: "#/components/schemas/404"
+        "405":
+          description: Validation exception
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: "#/components/schemas/405"
+        "500":
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: "#/components/schemas/500"
+  /documents/{document_number}:
+    delete:
+      tags:
+        - 文書
+      summary: 文書の削除
+      description: |
+        入力チェック
+        - 文書番号が一致していること(完全一致)
+        - 上記チェックから外れた場合は、以下のように返却する
+
+          例)
+            - status_code: 400
+            - message: 入力値が不正です
+
+        例外処理
+        - 例外種類に応じて、Response例の通りに返すこと
+        - また、例外が発生した場合はログを残すこと
+      parameters:
+        - in: path
+          name: document_number
+          schema:
+            type: integer
+          required: true
+          description: 文書番号
+      responses:
+        "204":
+          description: Successful
+        "400":
+          description: Invalid ID supplied
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: "#/components/schemas/400"
+        "404":
+          description: Documents not found
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: "#/components/schemas/404"
+        "405":
+          description: Validation exception
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: "#/components/schemas/405"
+        "500":
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: "#/components/schemas/500"
+  /documents/attributes/{document_number}:
+    patch:
+      tags:
+        - 文書の属性
+      summary: 文書属性の更新
+      description: |
+        入力チェック
+        - 必須のチェック
+        - 文書番号が一致していること(完全一致)
+        - 文書属性のkeyとvalueはセットで入力されていること
+        - 上記チェックから外れた場合は、以下のように返却する
+
+          例)
+            - status_code: 400
+            - message: 入力値が不正です
+
+        登録時
+        - 文書番号が一致したとき、入力された属性のキーが存在していればその値を更新する
+
+        登録後
+        - 文書属性は登録されている分を出力すること
+
+        例外処理
+        - 例外種類に応じて、Response例の通りに返すこと
+        - また、例外が発生した場合はログを残すこと
+      parameters:
+        - in: path
+          name: document_number
+          schema:
+            type: integer
+          required: true
+          description: 文書番号
+      requestBody:
+        description: 更新する属性
+        content:
+          application/json:
+            schema:
+              type: object
+              $ref: "#/components/schemas/attributes"
+      responses:
+        "200":
+          description: Successful
+          content:
+            application/json:
+              schema:
+                type: object
                 $ref: "#/components/schemas/documents_detail"
         "400":
           description: Invalid ID supplied
@@ -291,136 +423,6 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/register"
-        "400":
-          description: Invalid ID supplied
-          content:
-            application/json:
-              schema:
-                type: object
-                $ref: "#/components/schemas/400"
-        "404":
-          description: Documents not found
-          content:
-            application/json:
-              schema:
-                type: object
-                $ref: "#/components/schemas/404"
-        "405":
-          description: Validation exception
-          content:
-            application/json:
-              schema:
-                type: object
-                $ref: "#/components/schemas/405"
-        "500":
-          description: Server Error
-          content:
-            application/json:
-              schema:
-                type: object
-                $ref: "#/components/schemas/500"
-  /documents/attributes/{document_number}:
-    patch:
-      tags:
-        - 文書の属性
-      summary: 文書属性の更新
-      description: |
-        入力チェック
-        - 必須のチェック
-        - 文書番号が一致していること(完全一致)
-        - 文書属性のkeyとvalueはセットで入力されていること
-        - 上記チェックから外れた場合は、以下のように返却する
-
-          例)
-            - status_code: 400
-            - message: 入力値が不正です
-
-        登録時
-        - 文書番号が一致したとき、入力された属性のキーが存在していればその値を更新する
-
-        登録後
-        - 文書属性は登録されている分を出力すること
-
-        例外処理
-        - 例外種類に応じて、Response例の通りに返すこと
-        - また、例外が発生した場合はログを残すこと
-      parameters:
-        - in: path
-          name: document_number
-          schema:
-            type: integer
-          required: true
-          description: 文書番号
-      requestBody:
-        description: 更新する属性
-        content:
-          application/json:
-            schema:
-              type: object
-              $ref: "#/components/schemas/attributes"
-      responses:
-        "200":
-          description: Successful
-          content:
-            application/json:
-              schema:
-                type: object
-                $ref: "#/components/schemas/documents_detail"
-        "400":
-          description: Invalid ID supplied
-          content:
-            application/json:
-              schema:
-                type: object
-                $ref: "#/components/schemas/400"
-        "404":
-          description: Documents not found
-          content:
-            application/json:
-              schema:
-                type: object
-                $ref: "#/components/schemas/404"
-        "405":
-          description: Validation exception
-          content:
-            application/json:
-              schema:
-                type: object
-                $ref: "#/components/schemas/405"
-        "500":
-          description: Server Error
-          content:
-            application/json:
-              schema:
-                type: object
-                $ref: "#/components/schemas/500"
-  /documents/{document_number}:
-    delete:
-      tags:
-        - 文書
-      summary: 文書の削除
-      description: |
-        入力チェック
-        - 文書番号が一致していること(完全一致)
-        - 上記チェックから外れた場合は、以下のように返却する
-
-          例)
-            - status_code: 400
-            - message: 入力値が不正です
-
-        例外処理
-        - 例外種類に応じて、Response例の通りに返すこと
-        - また、例外が発生した場合はログを残すこと
-      parameters:
-        - in: path
-          name: document_number
-          schema:
-            type: integer
-          required: true
-          description: 文書番号
-      responses:
-        "204":
-          description: Successful
         "400":
           description: Invalid ID supplied
           content:
