@@ -1,6 +1,6 @@
 openapi: 3.0.3
 info:
-  title: Web API document manager - OpenAPI 3.0
+  title: Share Docs Pub - OpenAPI 3.0
   description: |
     -  文書管理APIエンドポイント
         -  文書と文書属性の登録
@@ -80,9 +80,10 @@ paths:
                   format: binary
                 key:
                   description: |
-                    登録したいkey名(英数字)とvalue(なんでもOK)のセットで入力する
+                    登録したいkey名(英数字)とvalue(指定なし)のセットで入力する
                     - 入力例：  "title": "API基本設計仕様書"
                   type: string
+                  additionalProperties: true
               required: ["file"]
               example:
                 key: api
@@ -242,7 +243,7 @@ paths:
               schema:
                 type: object
                 $ref: "#/components/schemas/500"
-  /documents/attributes/{document_number}:
+  /documents/{document_number}/attributes:
     patch:
       tags:
         - 文書の属性
@@ -317,7 +318,7 @@ paths:
               schema:
                 type: object
                 $ref: "#/components/schemas/500"
-  /documents/file/{document_number}:
+  /documents/{document_number}/file:
     get:
       tags:
         - 文書ファイル
@@ -376,7 +377,7 @@ paths:
               schema:
                 type: object
                 $ref: "#/components/schemas/500"
-    put:
+    patch:
       tags:
         - 文書ファイル
       summary: 文書の更新
@@ -462,15 +463,12 @@ components:
         document_type:
           type: string
           example: pdf
-        document_key:
-          type: string
-          example: pdf_doc
         document_number:
           type: string
           example: dku7sjdjosUsdj89
         document_name:
           type: string
-          example: specification_api.pdf
+          example: specification_api
         attributes:
           type: object
           properties:
@@ -525,33 +523,30 @@ components:
         status_code:
           type: integer
           example: 200
-        items:
+        document_type:
+          type: string
+          example: pdf
+        document_number:
+          type: string
+          example: dku7sjdjosUsdj89
+        document_name:
+          type: string
+          example: specification_api.pdf
+        attributes:
           type: object
           properties:
-            document_type:
+            title:
               type: string
-              example: pdf
-            document_number:
+              example: 公開作業手順書
+            note:
               type: string
-              example: dku7sjdjosUsdj89
-            document_name:
+              example: Web公開手順
+            created:
               type: string
-              example: specification_api.pdf
-            attributes:
-              type: object
-              properties:
-                title:
-                  type: string
-                  example: 公開作業手順書
-                note:
-                  type: string
-                  example: Web公開手順
-                created:
-                  type: string
-                  example: 2022.03.04
-                updated:
-                  type: string
-                  example: 2023.01.12
+              example: 2022.03.04
+            updated:
+              type: string
+              example: 2023.01.12
     deleted:
       description: 削除した文書
       properties:
