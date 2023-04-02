@@ -117,7 +117,7 @@ paths:
     get:
       tags:
         - 文書
-      summary: 文書属性を取得
+      summary: 文書の検索
       description: |
         |入力チェック|status|message|
         |-|-|-|
