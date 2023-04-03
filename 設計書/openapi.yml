@@ -49,34 +49,21 @@ paths:
         |-|
         |PDF/Word/Excel/Image/Video|
 
-        |保存ディレクトリ名|ドキュメントタイプ<br>(documents.document_type)|
+        |リクエスト時のHTTPヘッダー|指定値|
         |-|-|
-        |/pdf/|pdf|
-        |/word/|word|
-        |/excel/|excel|
-        |/image/|image|
-        |/video/|video|
+        |Content-Type|multipart/form-data|
 
         |入力チェック|status|message|
         |-|-|-|
-        |・"file"のキー名は必須|400|入力値が不正です|
-        |・"file"のキー名、は1つのみとする|↑|↑|
-        |・文書の属性は必須入力ではない|↑|↑|
-        |・文書の属性のkeyとvalueはセットで入力されていること|↑|↑|
+        |・HTML要素のname属性の値を"file"で<br>バイナリーファイルをリクエストされていること|400|入力値が不正です|
+        |・name属性の値が"file"は、1つのみとする|↑|↑|
         |・入力されたファイルは、対応したmime_typeであること|↑|↑|
-        |・"file"以外のキー名は、文書の属性として扱う|↑|↑|
-
-        |ファイルの扱い|例|
-        |-|-|
-        |・mime_typeの種類で、<br>ファイルタイプを特定し保存する|pdf/word/excel/image/movie|
-        |・保存するディレクトリは、<br>ドキュメントタイプで区切って保存すること|/pdf/josdjXd9-skdjsi.pdf|
-        |・保存するファイルのファイル名は、<br>重複しないようにuuidを生成してファイル名として管理する|36桁のuuidを生成する|
-        |・保存するファイルの拡張子も上記と同時に保存する|pdf/word/excel/image/movie|
-        |・元のファイル名はDBで保存すること|API開発仕様書|
+        |・name属性の値が"file"以外は、文書の属性として登録する|↑|↑|
+        |・文書の属性のname属性の値は英数字のみ(10字まで)入力可<br>そのフォームに入力された値は任意(20字まで)|↑|↑|
 
         |登録後|
         |-|
-        |・登録後のレスポンスは、登録した内容を出力すること|
+        |・登録後のレスポンスは、登録されたファイルの情報が表示される(レスポンス例を参照)|
 
         |例外処理|
         |-|
@@ -93,8 +80,7 @@ paths:
                   format: binary
                 key(任意):
                   description: |
-                    key: valueのセットで入力されていること
-                    <br>入力例：
+                    文書の属性の入力例：
 
                     `"title": "API基本設計仕様書"`
                   type: string
@@ -113,7 +99,7 @@ paths:
           $ref: "#/components/responses/405"
         "500":
           $ref: "#/components/responses/500"
-  /documents/?key=value:
+  /documents/?key[>=]=value:
     get:
       tags:
         - 文書
@@ -121,14 +107,21 @@ paths:
       description: |
         |入力チェック|status|message|
         |-|-|-|
-        |・文書の属性のkeyが一致すること|400|入力値が不正です|
-        |・文書の属性のkeyとvalueが必須|↑|↑|
+        |・文書の属性のkeyが一致する|400|入力値が不正です|
+        |・keyはname属性を、[]の中で比較する演算子を指定し、<br>valueで検索したい値を入力する<br>|↑|↑|
         |・文書の属性のkeyが一致した場合、<br>そのkeyのvalueと一致するか(部分一致)|↑|↑|
+
+        |name属性に指定する比較演算子|検索内容|
+        |-|-|
+        |=|部分一致するものを対象|
+        |>|検索値より大きいものを対象|
+        |<|検索値より小さいもの(未満)を対象|
+        |>=|左辺が右辺より大きいか等しい（以上）|
+        |<=|左辺が右辺より小さいか等しい（以下）|
 
         |検索して合致した場合|
         |-|
-        |・文書番号はファイル保存時に生成したuuidを使用する|
-        |・文書属性は、登録した分だけ出力する|
+        |・文書属性は、登録された全ての属性を出力する|
 
         |例外処理|
         |-|
@@ -140,8 +133,8 @@ paths:
           schema:
             type: string
           required: true
-          description: クエリのキーと値をセットで検索する
-          example: ?title=音楽
+          description: タイトルが音楽のものを検索する場合
+          example: ?title[==]=音楽
       responses:
         "200":
           $ref: "#/components/responses/documents_detail"
@@ -189,7 +182,7 @@ paths:
     patch:
       tags:
         - 文書の属性
-      summary: 文書属性の更新
+      summary: 文書の属性の更新
       description: |
         |入力チェック|status|message|
         |-|-|-|
@@ -222,6 +215,38 @@ paths:
       responses:
         "200":
           $ref: "#/components/responses/documents_detail"
+        "400":
+          $ref: "#/components/responses/400"
+        "404":
+          $ref: "#/components/responses/404"
+        "405":
+          $ref: "#/components/responses/405"
+        "500":
+          $ref: "#/components/responses/500"
+    delete:
+      tags:
+        - 文書の属性
+      summary: 文書の属性の削除
+      description: |
+        |入力チェック|status|message|
+        |-|-|-|
+        |・必須のチェック|400|入力値が不正です|
+        |・文書番号が一致していること(完全一致)|↑|↑|
+
+        |例外処理|
+        |-|
+        |・例外種類に応じて、Response例の通りに返すこと|
+        |・また、例外が発生した場合はログを残すこと|
+      parameters:
+        - in: path
+          name: document_number
+          schema:
+            type: integer
+          required: true
+          description: 文書番号
+      responses:
+        "204":
+          description: 成功
         "400":
           $ref: "#/components/responses/400"
         "404":
@@ -267,17 +292,20 @@ paths:
         - 文書ファイル
       summary: 文書の更新
       description: |
+        |リクエスト時のHTTPヘッダー|指定値|
+        |-|-|
+        |Content-Type|multipart/form-data|
+
         |入力チェック|status|message|
         |-|-|-|
-        |・"file"のキー名は必須|400|入力値が不正です|
-        |・"file"のキー名、は1つのみとする|↑|↑|
+        |・HTML要素のname属性の値を"file"で<br>バイナリーファイルをリクエストされていること|400|入力値が不正です|
+        |・name属性の値が"file"は、1つのみとする|↑|↑|
         |・文書番号が一致していること(完全一致)|↑|↑|
         |・登録しているファイルの拡張子と一致していること|↑|↑|
 
         |登録後|
         |-|
-        |・レスポンスは、更新した内容を出力すること|
-        |・文書の属性は登録されている全てを出力すること|
+        |・登録後のレスポンスは、登録されたファイルの情報が表示される(レスポンス例を参照)|
 
         |例外処理|
         |-|
@@ -357,15 +385,18 @@ components:
           format: date-time
   responses:
     register:
-      description: ファイル登録時のレスポンス
+      description: |
+        ファイル登録時のレスポンス<br>
+        *以下の属性は、更新不可(登録時の固定値)<br>
+        *文書ファイルの更新時のみ更新される
+          - document_type
+          - document_number
+          - document_name
       content:
         application/json:
           schema:
             type: object
             properties:
-              status_code:
-                type: integer
-                example: 200
               document_type:
                 type: string
                 example: pdf
@@ -375,15 +406,12 @@ components:
               document_name:
                 type: string
                 example: specification_api
-              attributes:
-                type: object
-                properties:
-                  title:
-                    type: string
-                    example: API設計仕様書
-                  note:
-                    type: string
-                    example: ドキュメント管理のAPI設計書
+              title:
+                type: string
+                example: API設計仕様書
+              note:
+                type: string
+                example: ドキュメント管理のAPI設計書
     serach_item:
       description: 検索時の返却
       content:
@@ -391,9 +419,6 @@ components:
           schema:
             type: object
             properties:
-              status_code:
-                type: integer
-                example: 200
               document_name:
                 type: string
                 example: specification_api.pdf
@@ -404,16 +429,12 @@ components:
                 type: string
               optionals:
                 type: object
-                properties:
-                  attributes:
-                    type: object
-                    properties:
-                      title:
-                        type: string
-                        example: none | api
-                      optional_value:
-                        type: string
-                        example: none | developer
+              title:
+                type: string
+                example: none | api
+              optional_value:
+                type: string
+                example: none | developer
     attributes:
       description: 文書の属性
       content:
@@ -434,9 +455,6 @@ components:
           schema:
             type: object
             properties:
-              status_code:
-                type: integer
-                example: 200
               document_type:
                 type: string
                 example: pdf
@@ -446,58 +464,47 @@ components:
               document_name:
                 type: string
                 example: specification_api.pdf
-              attributes:
-                type: object
-                properties:
-                  title:
-                    type: string
-                    example: 公開作業手順書
-                  note:
-                    type: string
-                    example: Web公開手順
-                  created:
-                    type: string
-                    example: 2022.03.04
-                  updated:
-                    type: string
-                    example: 2023.01.12
+              title:
+                type: string
+                example: 公開作業手順書
+              note:
+                type: string
+                example: Web公開手順
+              created:
+                type: string
+                example: 2022.03.04
+              updated:
+                type: string
+                example: 2023.01.12
     400:
-      description: ファイル登録時のレスポンス
+      description: 入力バリデーションエラー
       content:
         application/json:
           schema:
             properties:
-              status_code:
-                example: 400
-              message:
+              error_message:
                 example: 入力値が不正です
     404:
-      description: ファイル登録時のレスポンス
+      description: 指定のルーティング外
       content:
         application/json:
           schema:
             properties:
-              status_code:
-                example: 404
-              message:
+              error_message:
                 example: アクセス方法を再度確認してください
     405:
-      description: ファイル登録時のレスポンス
+      description: 指定のメソッド外
       content:
         application/json:
           schema:
             properties:
-              status_code:
-                example: 405
-              message:
+              error_message:
                 example: アクセス方法を再度確認してください
     500:
-      description: ファイル登録時のレスポンス
+      description: サーバーエラー
       content:
         application/json:
           schema:
             properties:
-              status_code:
-                example: 500
-              message:
+              error_message:
                 example: サーバーでエラーが発生しました
