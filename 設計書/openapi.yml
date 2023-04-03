@@ -58,8 +58,8 @@ paths:
         |・HTML要素のname属性の値を"file"で<br>バイナリーファイルをリクエストされていること|400|入力値が不正です|
         |・name属性の値が"file"は、1つのみとする|↑|↑|
         |・入力されたファイルは、対応したmime_typeであること|↑|↑|
-        |・name属性の値が"file"以外は、文書の属性として登録する|↑|↑|
-        |・文書の属性のname属性の値は英数字のみ(10字まで)入力可<br>そのフォームに入力された値は任意(20字まで)|↑|↑|
+        |・文書の属性を入力する場合は、<br>"attribute[title]: API基本設計仕様書"のように<br>[]内に文書の属性のkey値として指定したいname属性を入力し、<br>フォームの入力値も入力していること|↑|↑|
+        |・文書の属性のname属性の値([]の中)は英数字のみ(10字まで)入力可<br>そのフォームに入力された値は任意(20字まで)|↑|↑|
 
         |登録後|
         |-|
@@ -78,11 +78,11 @@ paths:
                 file:
                   type: string
                   format: binary
-                key(任意):
+                attribute[任意]:
                   description: |
                     文書の属性の入力例：
 
-                    `"title": "API基本設計仕様書"`
+                    `"attribute[title]": "API基本設計仕様書"`
                   type: string
                   additionalProperties: true
               required: ["file"]
@@ -232,6 +232,7 @@ paths:
         |-|-|-|
         |・必須のチェック|400|入力値が不正です|
         |・文書番号が一致していること(完全一致)|↑|↑|
+        |・文書の属性のkeyが一致していること(完全一致)|↑|↑|
 
         |例外処理|
         |-|
@@ -244,6 +245,9 @@ paths:
             type: integer
           required: true
           description: 文書番号
+      requestBody:
+        description: 削除する属性
+        $ref: "#/components/responses/attributes"
       responses:
         "204":
           description: 成功
