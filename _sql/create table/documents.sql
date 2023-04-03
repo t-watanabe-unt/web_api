@@ -1,0 +1,10 @@
+CREATE TABLE `documents` (
+  `id` BIGINT NOT NULL AUTO_INCREMENT,
+  `document_type` INT COLLATE utf8mb4_unicode_ci NOT NULL,
+  `document_number` VARCHAR(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `document_name` VARCHAR(100) NOT NULL UNIQUE,
+  `document_extension` VARCHAR(10) NOT NULL,
+  `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
+  `updated_at` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
