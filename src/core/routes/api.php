@@ -18,23 +18,29 @@ use Illuminate\Support\Facades\Route;
 */
 
 // 文書
-Route::prefix('v1')->group(function () {
-    Route::name('documents.')->group(function() {
-        Route::prefix('documents')->group(function() {
-            // 文書の登録
-            Route::post('/', [DocumentsController::class, 'create'])->name('create');
-            // 文書の検索
-            Route::get('/', [DocumentsController::class, 'create'])->name('search');
-            // 文書の削除
-            Route::delete('/{document_number}', [DocumentsController::class, 'create'])->name('search');
+Route::prefix('v1')->group(
+    function () {
+        Route::name('documents.')->group(
+            function () {
+                Route::prefix('documents')->group(
+                    function () {
+                        // 文書の登録
+                        Route::post('/', [DocumentsController::class, 'create'])->name('create');
+                        // 文書の検索
+                        Route::get('/', [DocumentsController::class, 'search'])->name('search');
+                        // 文書の削除
+                        Route::delete('/{document_number}', [DocumentsController::class, 'create'])->name('search');
 
-            // 文書の属性の更新
-            Route::patch('/{document_number}/attributes', [DocumentsAtrributesController::class, 'updateAttribute'])->name('updateAttribute');
+                        // 文書の属性の更新
+                        Route::patch('/{document_number}/attributes', [DocumentsAtrributesController::class, 'updateAttribute'])->name('updateAttribute');
 
-            // 文書ファイルの取得(DL)
-            Route::get('/{document_number}/file', [DocumentsFilesController::class, 'download'])->name('download');
-            // 文書ファイルの更新
-            Route::patch('/{document_number}/file', [DocumentsFilesController::class, 'updateFile'])->name('download');
-        });
-    });    
-});
+                        // 文書ファイルの取得(DL)
+                        Route::get('/{document_number}/file', [DocumentsFilesController::class, 'download'])->name('download');
+                        // 文書ファイルの更新
+                        Route::patch('/{document_number}/file', [DocumentsFilesController::class, 'updateFile'])->name('download');
+                    }
+                );
+            }
+        );
+    }
+);
