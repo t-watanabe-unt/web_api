@@ -6,6 +6,9 @@ use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
+/**
+ * Api用共通バリデーション(エラー時のレスポンス定義)
+ */
 class ApiCommonRequest extends FormRequest
 {
     /**

@@ -8,4 +8,8 @@ use Illuminate\Http\Request;
 class DocumentsAtrributesController extends Controller
 {
     //
+    public function updateAttribute()
+    {
+        
+    }
 }

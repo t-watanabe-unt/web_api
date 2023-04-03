@@ -8,4 +8,13 @@ use Illuminate\Http\Request;
 class DocumentsFilesController extends Controller
 {
     //
+    public function download()
+    {
+        // ファイルのダウンロード
+    }
+
+    public function updateFile()
+    {
+        // ファイルの更新
+    }
 }
