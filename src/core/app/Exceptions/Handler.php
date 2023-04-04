@@ -51,7 +51,7 @@ class Handler extends ExceptionHandler
                     if ($e instanceof HttpException) {
                         $statusCode = $e->getStatusCode();
                         switch ($statusCode) {
-                        case 403:
+                        case 400:
                             $message = __('messages.exception.400');
                             break;
                         case 404:
