@@ -30,7 +30,7 @@ info:
 #   description: Find out more about Swagger
 #   url: http://swagger.io
 servers:
-  - url: https://localhost/api/v1/
+  - url: http://localhost/api/v1/
 tags:
   - name: 文書
     description: 文書の新規登録、検索、削除
@@ -78,7 +78,7 @@ paths:
                 file:
                   type: string
                   format: binary
-                attribute[任意]:
+                attribute[]:
                   description: |
                     文書の属性の入力例：
 
@@ -99,16 +99,18 @@ paths:
           $ref: "#/components/responses/405"
         "500":
           $ref: "#/components/responses/500"
-  /documents/?key[>=]=value:
     get:
       tags:
         - 文書
       summary: 文書の検索
       description: |
-        |入力チェック|status|message|
+        |存在チェック|status|message|
         |-|-|-|
         |・文書の属性のkeyが一致する|400|入力値が不正です|
-        |・keyはname属性を、[]の中で比較する演算子を指定し、<br>valueで検索したい値を入力する<br>※比較演算子はエンコードされていること|↑|↑|
+
+        |入力チェック|status|message|
+        |-|-|-|
+        |・keyはname属性を、[]の中で比較する演算子を指定し、<br>valueで検索したい値を入力する<br>※比較演算子はエンコードされていること|400|入力値が不正です|
         |・文書の属性のkeyが一致した場合、<br>そのkeyのvalueと一致するか(部分一致)|↑|↑|
 
         |name属性に指定する比較演算子|検索内容|
@@ -118,6 +120,7 @@ paths:
         |<|検索値より小さいもの(未満)を対象|
         |>=|左辺が右辺より大きいか等しい（以上）|
         |<=|左辺が右辺より小さいか等しい（以下）|
+        *比較演算子は、エンコードして入力されていること
 
         |検索して合致した場合|
         |-|
@@ -129,7 +132,7 @@ paths:
         |・また、例外が発生した場合はログを残すこと|
       parameters:
         - in: query
-          name: key
+          name: key[*]
           schema:
             type: string
           required: true
@@ -154,7 +157,7 @@ paths:
         - 文書
       summary: 文書の削除
       description: |
-        |入力チェック|status|message|
+        |存在チェック|status|message|
         |-|-|-|
         |・文書番号が一致していること(完全一致)|400|入力値が不正です|
 
@@ -186,19 +189,18 @@ paths:
         - 文書の属性
       summary: 文書の属性の更新
       description: |
-        |入力チェック|status|message|
+        |存在チェック|status|message|
         |-|-|-|
-        |・必須のチェック|400|入力値が不正です|
-        |・文書番号が一致していること(完全一致)|↑|↑|
-        |・文書属性のkeyとvalueはセットで入力されていること|↑|↑|
+        |・文書番号が一致していること(完全一致)|400|入力値が不正です|
+        |・文書の属性のkeyが一致していること(完全一致)|↑|↑|
 
         |登録時|
         |-|
-        |・文書番号が一致したとき、入力された文書の属性のkeyが存在していればその値を更新する|
+        |・文書番号が一致したとき、入力された文書の属性のkeyが存在していればその値を更新する<br>それ以外は新規登録|
 
         |登録後|
         |-|
-        |・文書属性は登録されている分を出力すること|
+        |・文書の属性は登録されている分を出力すること|
 
         |例外処理|
         |-|
@@ -219,7 +221,7 @@ paths:
           description: 文書の属性のkey
       requestBody:
         description: 更新する属性
-        $ref: "#/components/responses/attributes"
+        $ref: "#/components/requestBodies/attributes"
       responses:
         "200":
           $ref: "#/components/responses/documents_detail"
@@ -236,10 +238,9 @@ paths:
         - 文書の属性
       summary: 文書の属性の削除
       description: |
-        |入力チェック|status|message|
+        |存在チェック|status|message|
         |-|-|-|
-        |・必須のチェック|400|入力値が不正です|
-        |・文書番号が一致していること(完全一致)|↑|↑|
+        |・文書番号が一致していること(完全一致)|400|入力値が不正です|
         |・文書の属性のkeyが一致していること(完全一致)|↑|↑|
 
         |例外処理|
@@ -259,9 +260,6 @@ paths:
             type: string
           required: true
           description: 文書の属性のkey
-      requestBody:
-        description: 削除する属性
-        $ref: "#/components/responses/attributes"
       responses:
         "204":
           description: 成功
@@ -279,7 +277,7 @@ paths:
         - 文書ファイル
       summary: 文書のダウンロード
       description: |
-        |入力チェック|status|message|
+        |存在チェック|status|message|
         |-|-|-|
         |・文書番号が一致していること(完全一致)|400|入力値が不正です|
 
@@ -296,7 +294,7 @@ paths:
           description: 文書番号
       responses:
         "200":
-          description: 成功
+          $ref: "#/components/responses/download"
         "400":
           $ref: "#/components/responses/400"
         "404":
@@ -365,15 +363,15 @@ components:
         id:
           type: integer
           description: 文書id
-        document_type:
-          type: string
-          description: 文書タイプ
         document_number:
           type: string
           description: 文書番号
         document_name:
           type: string
           description: 文書名
+        document_mime_type:
+          type: string
+          description: 文書mimeタイプ
         document_extension:
           type: string
           description: 文書の拡張子
@@ -401,29 +399,40 @@ components:
         updated_at:
           type: string
           format: date-time
+  requestBodies:
+    attributes:
+      description: 文書の属性
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              value:
+                type: string
+                example: api
   responses:
     register:
       description: |
         ファイル登録時のレスポンス<br>
         *以下の属性は、更新不可(登録時の固定値)<br>
         *文書ファイルの更新時のみ更新される
-          - document_type
           - document_number
           - document_name
+          - document_mime_type
       content:
         application/json:
           schema:
             type: object
             properties:
-              document_type:
-                type: string
-                example: pdf
               document_number:
                 type: string
                 example: dku7sjdjosUsdj89
               document_name:
                 type: string
                 example: specification_api
+              document_mime_type:
+                type: string
+                example: application/pdf
               title:
                 type: string
                 example: API設計仕様書
@@ -453,16 +462,6 @@ components:
               optional_value:
                 type: string
                 example: none | developer
-    attributes:
-      description: 文書の属性
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              value:
-                type: string
-                example: api
     documents_detail:
       description: 文書の属性
       content:
@@ -470,15 +469,15 @@ components:
           schema:
             type: object
             properties:
-              document_type:
-                type: string
-                example: pdf
               document_number:
                 type: string
                 example: dku7sjdjosUsdj89
               document_name:
                 type: string
                 example: specification_api.pdf
+              document_mime_type:
+                type: string
+                example: pdf
               title:
                 type: string
                 example: 公開作業手順書
@@ -491,6 +490,30 @@ components:
               updated:
                 type: string
                 example: 2023.01.12
+    download:
+      description: |
+        ファイルダウンロード<br>
+        *ファイルに応じたmime_typeを返す
+      content:
+        "application/pdf": {}
+        ? "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+        : {}
+        application/msword: {}
+        application/vnd.openxmlformats-officedocument.spreadsheetml.sheet: {}
+        application/vnd.ms-excel: {}
+        image/png: {}
+        image/jpeg: {}
+        image/bmp: {}
+        image/x-ms-bmp: {}
+        image/svg+xml: {}
+        audio/mpeg: {}
+        video/3gp: {}
+        video/avi: {}
+        video/mp4: {}
+        video/mpeg: {}
+        video/quicktime: {}
+        video/webm: {}
+        video/x-msvideo: {}
     400:
       description: 入力バリデーションエラー
       content:
