@@ -2,7 +2,10 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\DocumentAttributesNameRule;
+use Closure;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Log;
 
 class DocumentUploadRequest extends ApiCommonRequest
 {
@@ -24,8 +27,16 @@ class DocumentUploadRequest extends ApiCommonRequest
         return [
             'file' => [
                 'required',
-
-            ]
+                'file',
+            ],
+            'attribute.*' => [
+                'sometimes',
+                'bail',
+                'required',
+                'string',
+                'max:20',
+                new DocumentAttributesNameRule(),
+            ],
         ];
     }
 }

@@ -69,8 +69,7 @@ class Handler extends ExceptionHandler
 
                         return response()->json(
                             [
-                            'code' => $statusCode,
-                            'message' => $message,
+                                'message' => $message,
                             ], $statusCode
                         );
                     }
@@ -79,7 +78,7 @@ class Handler extends ExceptionHandler
                     return response()->json(
                         [
                         'status' => 500,
-                        'message' => __('messages.exceptioin.500'),
+                        'message' => __('messages.exception.500'),
                         ], 500, [
                         'Content-Type' => 'application/problem+json',
                         ]

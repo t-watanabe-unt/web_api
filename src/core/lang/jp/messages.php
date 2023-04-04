@@ -2,9 +2,9 @@
 
 return [
     'exception' => [
-        '400' => 'Invalid ID supplied',
-        '404' => 'Documents not found',
-        '405' => 'Validation exception',
-        '500' => 'Server Error'
+        '400' => '入力値が不正です',
+        '404' => 'アクセス方法を再度確認してください',
+        '405' => 'アクセス方法を再度確認してください',
+        '500' => 'サーバーでエラーが発生しました'
     ]
 ];
