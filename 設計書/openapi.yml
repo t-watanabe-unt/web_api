@@ -108,7 +108,7 @@ paths:
         |入力チェック|status|message|
         |-|-|-|
         |・文書の属性のkeyが一致する|400|入力値が不正です|
-        |・keyはname属性を、[]の中で比較する演算子を指定し、<br>valueで検索したい値を入力する<br>|↑|↑|
+        |・keyはname属性を、[]の中で比較する演算子を指定し、<br>valueで検索したい値を入力する<br>※比較演算子はエンコードされていること|↑|↑|
         |・文書の属性のkeyが一致した場合、<br>そのkeyのvalueと一致するか(部分一致)|↑|↑|
 
         |name属性に指定する比較演算子|検索内容|
@@ -133,8 +133,10 @@ paths:
           schema:
             type: string
           required: true
-          description: タイトルが音楽のものを検索する場合
-          example: ?title[==]=音楽
+          description: |
+            タイトルが音楽のものを検索する場合<br>
+            ※[]の中の比較演算子はエンコードし入力されていること
+          example: ?title[=]=音楽
       responses:
         "200":
           $ref: "#/components/responses/documents_detail"
@@ -178,7 +180,7 @@ paths:
           $ref: "#/components/responses/405"
         "500":
           $ref: "#/components/responses/500"
-  /documents/{document_number}/attributes:
+  /documents/{document_number}/attributes/{key}:
     patch:
       tags:
         - 文書の属性
@@ -209,6 +211,12 @@ paths:
             type: integer
           required: true
           description: 文書番号
+        - in: path
+          name: key
+          schema:
+            type: string
+          required: true
+          description: 文書の属性のkey
       requestBody:
         description: 更新する属性
         $ref: "#/components/responses/attributes"
@@ -245,6 +253,12 @@ paths:
             type: integer
           required: true
           description: 文書番号
+        - in: path
+          name: key
+          schema:
+            type: string
+          required: true
+          description: 文書の属性のkey
       requestBody:
         description: 削除する属性
         $ref: "#/components/responses/attributes"
@@ -446,12 +460,9 @@ components:
           schema:
             type: object
             properties:
-              title:
+              value:
                 type: string
                 example: api
-              note:
-                type: string
-                example: API設計仕様書
     documents_detail:
       description: 文書の属性
       content:
