@@ -142,7 +142,7 @@ paths:
           example: ?title[=]=音楽
       responses:
         "200":
-          $ref: "#/components/responses/documents_detail"
+          $ref: "#/components/responses/documents_details"
         "400":
           $ref: "#/components/responses/400"
         "404":
@@ -490,6 +490,63 @@ components:
               updated:
                 type: string
                 example: 2023.01.12
+    documents_details:
+      description: |
+        文書の検索結果一覧<br>
+        検索で一致した文書の文書の属性を全て出力
+      content:
+        application/json:
+          schema:
+            oneOf:
+              - type: object
+                properties: {}
+              - type: object
+                properties:
+                  items:
+                   type: object
+                   properties:
+                    document_number:
+                      type: string
+                      example: dku7sjdjosUsdj89
+                    document_name:
+                      type: string
+                      example: specification_api.pdf
+                    document_mime_type:
+                      type: string
+                      example: pdf
+                    title:
+                      type: string
+                      example: 公開作業手順書
+                    note:
+                      type: string
+                      example: Web公開手順
+                    created:
+                      type: string
+                      example: 2022.03.04
+                    updated:
+                      type: string
+                      example: 2023.01.12
+          example:
+              {
+                0: {
+                  document_number: dku7sjdjosUsdj89,
+                  document_name: specification_api.pdf,
+                  document_mime_type: application/pdf,
+                  title: 公開作業手順書,
+                  note: Web公開手順,
+                  created: 2022.03.04,
+                  updated: 2023.01.12
+                },
+                1: {
+                  document_number: ss1soia9sasdoda,
+                  document_name: API仕様書.pdf,
+                  document_mime_type: application/pdf,
+                  title: 公開作業手順書,
+                  note: APIを公開するまで,
+                  created: 2022.03.04,
+                  updated: 2023.01.12
+                },
+              }
     download:
       description: |
         ファイルダウンロード<br>
