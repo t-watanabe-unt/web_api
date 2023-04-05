@@ -1,5 +1,5 @@
 create table `attributes` (
-  `id` INT(11) not null
+  `id` INT(11) not null AUTO_INCREMENT
   , `document_id` BIGINT not null
   , `key` VARCHAR(10) not null
   , `value` VARCHAR(20) not null
