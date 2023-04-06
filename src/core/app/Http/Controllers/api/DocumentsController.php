@@ -3,7 +3,10 @@
 namespace App\Http\Controllers\api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\DocumentSearchRequest;
 use App\Http\Requests\DocumentUploadRequest;
+use App\Http\Resources\DocumentCollection;
+use App\Http\Resources\DocumentResource;
 use App\Models\Document;
 use App\Models\Attribute;
 use App\Models\DocumentFileUpload;
@@ -42,31 +45,8 @@ class DocumentsController extends Controller
                 return $documentModel;
             }
         );
-        $documentResponse = Document::getDocumentByDocumentId($document->id, $request->has('attribute'));
-        $response = $this->makeJsonResponseDocument($documentResponse, $request->has('attribute'));
-
-        return response()->json($response, 200);
-    }
-
-    /**
-     * 登録後のレスポンス生成
-     *
-     * @param  object $documentResponse
-     * @return void
-     */
-    private function makeJsonResponseDocument(object $documentResponse, bool $hasAttribute)
-    {
-        $response = [
-            "document_number" => $documentResponse[0]->document_number,
-            "document_name" => $documentResponse[0]->document_name,
-            "document_mime_type" => $documentResponse[0]->document_mime_type,
-        ];
-        if ($hasAttribute) {
-            foreach ($documentResponse as $value) {
-                $response[$value->key] = $value->value;
-            }
-        }
-        return $response;
+        $response = Document::where('documents.id', $document->id)->with('attributes')->get();
+        return new DocumentCollection(DocumentResource::collection($response));
     }
 
     /**
@@ -75,23 +55,17 @@ class DocumentsController extends Controller
      * @param Request $request
      * @return void
      */
-    public function search(Request $request)
+    public function search(DocumentSearchRequest $request)
     {
+        // 空で入力された場合
+        if (empty($request->query())) {
+            abort(400);
+        }
+
+        // 検索結果を取得
         $documentIds = Attribute::getDocumentIdByAttributes($request->query());
-        $responses = [];
-
-        foreach (collect($documentIds)->unique() as $documentIds) {
-            $document = Document::getDocumentByDocumentId($documentIds['document_id'], true);
-            $responses[] = $this->makeJsonResponseDocument($document, true);
-        }
-
-        // 検索対象がない場合
-        if (empty($responses)) {
-            $responses = [
-                'message' => __('messages.response.empty'),
-            ];
-        }
-        return response()->json($responses, 200);
+        $responses = Document::whereIn('documents.id', collect($documentIds)->unique())->with('attributes')->get();
+        return new DocumentCollection(DocumentResource::collection($responses));
     }
 
     public function destroy()

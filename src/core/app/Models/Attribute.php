@@ -2,10 +2,12 @@
 
 namespace App\Models;
 
+use App\Constants\ValidationConstant;
 use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Facades\Log;
 
 class Attribute extends Model
 {
@@ -14,6 +16,67 @@ class Attribute extends Model
     public function document(): BelongsTo
     {
         return $this->belongsTo(Document::class, 'document_id');
+    }
+
+    /**
+     * 文書登録時、文書の属性のkeyが10文字以内
+     * かつ、英数字で入力されている
+     *
+     * @param string $attribute
+     * @param string $value
+     * @return boolean
+     */
+    public static function isValidAttributeNameWithRegister($attribute, $value)
+    {
+        $attribute = preg_replace('/attribute./', '', $attribute);
+        if (!preg_match('/^[a-zA-Z0-9]{1,10}+$/', $attribute) || empty($attribute)) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * 文書の属性のkeyが10文字以内
+     * かつ、英数字で入力されている
+     *
+     * @param string $attribute
+     * @param string $value
+     * @return boolean
+     */
+    public static function isValidAttributeName($attribute, $value)
+    {
+        if (!preg_match('/^[a-zA-Z0-9]{1,10}+$/', $attribute) || empty($attribute)) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * 文書の属性を検索する比較演算子とVALUEのチェック
+     *
+     * @param string $attribute
+     * @param array $value
+     * @return boolean
+     */
+    public static function isValidOperatorValue($attribute, $value)
+    {
+        // 比較演算子がない
+        if (!is_array($value)) {
+            return false;
+        }
+
+        foreach ($value as $key => $vl) {
+            // 比較演算子の入力チェック
+            if (!in_array($key, ValidationConstant::OPERATORS)) {
+                return false;
+            }
+
+            // valueの入力数チェック
+            if (ValidationConstant::VALUE_MAX < mb_strlen($vl) || empty($vl)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**

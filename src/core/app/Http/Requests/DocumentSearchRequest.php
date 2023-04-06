@@ -3,18 +3,19 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Log;
 
 /**
  * 文書検索時のバリデーション
  */
-class DocumentSearchRequest extends FormRequest
+class DocumentSearchRequest extends ApiCommonRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -25,7 +26,10 @@ class DocumentSearchRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            '*' => [
+                'attribute_name',
+                'operator'
+            ],
         ];
     }
 }

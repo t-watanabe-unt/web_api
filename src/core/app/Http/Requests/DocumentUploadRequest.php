@@ -2,8 +2,6 @@
 
 namespace App\Http\Requests;
 
-use App\Rules\DocumentAttributesNameRule;
-use App\Rules\DocumentFileMimeTypeRule;
 use Closure;
 use Illuminate\Foundation\Http\FormRequest;
 use App\Constants\MimeTypesConstant;
@@ -25,14 +23,14 @@ class DocumentUploadRequest extends ApiCommonRequest
      */
     public function rules(): array
     {
-        $mimes = implode(",", MimeTypesConstant::FILE_EXTENSIONS);
-        $mimeRules = implode(",", MimeTypesConstant::FILE_MIME_TYPES);
+        $mimeRules = implode(",", MimeTypesConstant::FILE_EXTENSIONS);
+        $mimeTypeRules = implode(",", MimeTypesConstant::FILE_MIME_TYPES);
         return [
             'file' => [
                 'required',
                 'file',
-                'mimes:'. $mimes,
-                'mimetypes:'. $mimeRules,
+                'mimes:'. $mimeRules,
+                'mimetypes:'. $mimeTypeRules,
             ],
             'attribute.*' => [
                 'sometimes',
@@ -40,7 +38,7 @@ class DocumentUploadRequest extends ApiCommonRequest
                 'required',
                 'string',
                 'max:20',
-                new DocumentAttributesNameRule(),
+                'attribute_name_register'
             ],
         ];
     }
