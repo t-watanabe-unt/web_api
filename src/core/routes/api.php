@@ -25,7 +25,7 @@ Route::prefix('v1')->group(
                 Route::prefix('documents')->group(
                     function () {
                         // 文書の登録
-                        Route::post('/', [DocumentsController::class, 'create'])->name('create');
+                        Route::post('/', [DocumentsController::class, 'register'])->name('register');
                         // 文書の検索
                         Route::get('/', [DocumentsController::class, 'search'])->name('search');
                         // 文書の削除

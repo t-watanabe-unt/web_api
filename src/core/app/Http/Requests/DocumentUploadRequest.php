@@ -6,7 +6,6 @@ use App\Rules\DocumentAttributesNameRule;
 use App\Rules\DocumentFileMimeTypeRule;
 use Closure;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\Log;
 use App\Constants\MimeTypesConstant;
 
 class DocumentUploadRequest extends ApiCommonRequest

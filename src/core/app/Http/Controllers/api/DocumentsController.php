@@ -6,63 +6,43 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\DocumentUploadRequest;
 use App\Models\Document;
 use App\Models\Attribute;
+use App\Models\DocumentFileUpload;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
 
 class DocumentsController extends Controller
 {
-    /**
-     * Documentモデルインスタンス
-     *
-     * @var object
-     */
-    private $document;
-
-    /**
-     * Attributeモデルインスタンス
-     *
-     * @var object
-     */
-    private $attribute;
-
-    /**
-     * 使用するモデルのインスタンスを生成
-     *
-     * @param Document  $document
-     * @param Attribute $attribute
-     */
-    public function __construct(Document $document, Attribute $attribute)
-    {
-        $this->document = $document;
-        $this->attribute = $attribute;
-    }
-
     /**
      * 文書の作成
      *
      * @param  DocumentUploadRequest $request
      * @return void
      */
-    public function create(DocumentUploadRequest $request)
+    public function register(DocumentUploadRequest $request)
     {
         $document = DB::transaction(
             function () use ($request) {
-                $fileExtension = $request->file('file')->getClientOriginalExtension();
-                $originalFileName = basename($request->file('file')->getClientOriginalName(), '.' . $fileExtension);
-                $mimeType = $request->file('file')->getMimeType();
-                $documentNumber = Str::uuid();
-                $request->file('file')->storeAs('/public/', $documentNumber . '.' . $fileExtension);
-                $document = $this->document->create($documentNumber, $originalFileName, $mimeType, $fileExtension);
+                // ファイル処理、保存
+                $file = DocumentFileUpload::storeFile($request);
+
+                // 文書の保存
+                $documentModel = new Document();
+                $documentModel->document_number = $file->documentNumber();
+                $documentModel->document_name = $file->documentName();
+                $documentModel->document_mime_type = $file->documentMimeType();
+                $documentModel->document_extension = $file->documentExtension();
+                $documentModel->document_path = $file->path();
+                $documentModel->save();
 
                 // 文書の属性の入力がある
                 if ($request->has('attribute')) {
-                    $this->attribute->create($document->id, $request->input('attribute'));
+                    $attributeModel = new Attribute();
+                    $attributeModel->create($documentModel->id, $request->input('attribute'));
                 }
-                return $document;
+                return $documentModel;
             }
         );
-        $documentResponse = $this->document->getDocumentByDocumentId($document->id, $request->has('attribute'));
+        $documentResponse = Document::getDocumentByDocumentId($document->id, $request->has('attribute'));
         $response = $this->makeJsonResponseDocument($documentResponse, $request->has('attribute'));
 
         return response()->json($response, 200);
@@ -71,7 +51,7 @@ class DocumentsController extends Controller
     /**
      * 登録後のレスポンス生成
      *
-     * @param  [type] $documentResponse
+     * @param  object $documentResponse
      * @return void
      */
     private function makeJsonResponseDocument(object $documentResponse, bool $hasAttribute)
@@ -89,11 +69,29 @@ class DocumentsController extends Controller
         return $response;
     }
 
+    /**
+     * 文書の属性で文書を検索
+     *
+     * @param Request $request
+     * @return void
+     */
     public function search(Request $request)
     {
+        $documentIds = Attribute::getDocumentIdByAttributes($request->query());
+        $responses = [];
 
-        // ドキュメントの検索
-        return response()->json($request->query(), 200);
+        foreach (collect($documentIds)->unique() as $documentIds) {
+            $document = Document::getDocumentByDocumentId($documentIds['document_id'], true);
+            $responses[] = $this->makeJsonResponseDocument($document, true);
+        }
+
+        // 検索対象がない場合
+        if (empty($responses)) {
+            $responses = [
+                'message' => __('messages.response.empty'),
+            ];
+        }
+        return response()->json($responses, 200);
     }
 
     public function destroy()
