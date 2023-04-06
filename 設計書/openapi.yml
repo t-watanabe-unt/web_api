@@ -82,7 +82,8 @@ paths:
                   description: |
                     文書の属性の入力例：
 
-                    `"attribute[title]": "API基本設計仕様書"`
+                    `"attribute[title]": "API基本設計仕様書"`<br>
+                    ※日付を入力する場合は、`2023-03-03`の形式で入力すること
                   type: string
                   additionalProperties: true
               required: ["file"]
@@ -112,6 +113,7 @@ paths:
         |-|-|-|
         |・keyはname属性を、[]の中で比較する演算子を指定し、<br>valueで検索したい値を入力する<br>※比較演算子はエンコードされていること|400|入力値が不正です|
         |・文書の属性のkeyが一致した場合、<br>そのkeyのvalueと一致するか(部分一致)|↑|↑|
+        ※日付を入力する場合は、`2023-03-03`の形式で入力すること
 
         |name属性に指定する比較演算子|検索内容|
         |-|-|
@@ -197,6 +199,7 @@ paths:
         |登録時|
         |-|
         |・文書番号が一致したとき、入力された文書の属性のkeyが存在していればその値を更新する<br>それ以外は新規登録|
+        |・日付を入力する場合は、`2023-03-03`の形式で入力すること|
 
         |登録後|
         |-|
@@ -522,31 +525,31 @@ components:
                       example: Web公開手順
                     created:
                       type: string
-                      example: 2022.03.04
+                      example: 2022-03-04
                     updated:
                       type: string
-                      example: 2023.01.12
+                      example: 2023-01-12
           example:
-              {
-                0: {
+              [
+                 {
                   document_number: dku7sjdjosUsdj89,
                   document_name: specification_api.pdf,
                   document_mime_type: application/pdf,
                   title: 公開作業手順書,
                   note: Web公開手順,
-                  created: 2022.03.04,
-                  updated: 2023.01.12
+                  created: 2022-03-04,
+                  updated: 2023-01-12
                 },
-                1: {
+                {
                   document_number: ss1soia9sasdoda,
                   document_name: API仕様書.pdf,
                   document_mime_type: application/pdf,
                   title: 公開作業手順書,
                   note: APIを公開するまで,
-                  created: 2022.03.04,
-                  updated: 2023.01.12
+                  created: 2022-03-04,
+                  updated: 2023-01-12
                 },
-              }
+              ]
     download:
       description: |
         ファイルダウンロード<br>

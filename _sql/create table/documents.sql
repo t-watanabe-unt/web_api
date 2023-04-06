@@ -4,6 +4,7 @@ create table `documents` (
   , `document_name` VARCHAR(100) not null
   , `document_mime_type` VARCHAR(100) not null
   , `document_extension` VARCHAR(10) not null
+  , `document_path` VARCHAR(100) not null
   , `created_at` datetime default CURRENT_TIMESTAMP not null
   , `updated_at` datetime default CURRENT_TIMESTAMP  ON UPDATE CURRENT_TIMESTAMP not null
   , constraint documents_PKC primary key (id)
