@@ -7,14 +7,14 @@ use Illuminate\Foundation\Http\FormRequest;
 /**
  * 文書の削除時のバリデーション
  */
-class DocumentDeleteRequest extends FormRequest
+class DocumentDeleteRequest extends ApiCommonRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -25,7 +25,26 @@ class DocumentDeleteRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'document_number' => [
+                'required',
+                'string',
+                'uuid',
+                'exists:App\Models\Document,document_number'
+            ]
         ];
+    }
+
+    /**
+     * ルートパラメータをマージ
+     *
+     * @return void
+     */
+    protected function prepareForValidation()
+    {
+        $this->merge(
+            [
+            'document_number' => $this->route('document_number'),
+            ]
+        );
     }
 }

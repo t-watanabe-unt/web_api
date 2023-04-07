@@ -6,7 +6,8 @@ use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
-class DocumentFileUpload {
+class DocumentFile
+{
 
     /**
      * 保存ディレクトリ
@@ -61,8 +62,7 @@ class DocumentFileUpload {
         string $documentMimeType,
         string $documentExtension,
         string $documentPath
-    )
-    {
+    ) {
         if (!Storage::exists($documentPath)) {
             throw new FileNotFoundException($documentPath);
         }
@@ -77,7 +77,7 @@ class DocumentFileUpload {
     /**
      * ファイル登録
      *
-     * @param DocumentUploadRequest $request
+     * @param  DocumentUploadRequest $request
      * @return DocumentFileUpload
      */
     public static function storeFile($request)
@@ -96,8 +96,8 @@ class DocumentFileUpload {
     /**
      * 保存用のファイル名生成
      *
-     * @param string $documentNumber
-     * @param string $fileExtension
+     * @param  string $documentNumber
+     * @param  string $fileExtension
      * @return string
      */
     private static function generateFileName($documentNumber, $fileExtension)
@@ -128,5 +128,16 @@ class DocumentFileUpload {
     public function path()
     {
         return $this->documentPath;
+    }
+
+    /**
+     * ファイルの削除
+     *
+     * @param  string $documentPath
+     * @return void
+     */
+    public static function delete($documentPath)
+    {
+        Storage::delete($documentPath);
     }
 }

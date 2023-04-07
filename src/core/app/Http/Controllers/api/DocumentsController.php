@@ -3,13 +3,14 @@
 namespace App\Http\Controllers\api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\DocumentDeleteRequest;
 use App\Http\Requests\DocumentSearchRequest;
 use App\Http\Requests\DocumentUploadRequest;
 use App\Http\Resources\DocumentCollection;
 use App\Http\Resources\DocumentResource;
 use App\Models\Document;
 use App\Models\Attribute;
-use App\Models\DocumentFileUpload;
+use App\Models\DocumentFile;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -26,7 +27,7 @@ class DocumentsController extends Controller
         $document = DB::transaction(
             function () use ($request) {
                 // ファイル処理、保存
-                $file = DocumentFileUpload::storeFile($request);
+                $file = DocumentFile::storeFile($request);
 
                 // 文書の保存
                 $documentModel = new Document();
@@ -52,7 +53,7 @@ class DocumentsController extends Controller
     /**
      * 文書の属性で文書を検索
      *
-     * @param Request $request
+     * @param  Request $request
      * @return void
      */
     public function search(DocumentSearchRequest $request)
@@ -68,8 +69,20 @@ class DocumentsController extends Controller
         return new DocumentCollection(DocumentResource::collection($responses));
     }
 
-    public function destroy()
+    /**
+     * ファイルの削除
+     *
+     * @param  DocumentDeleteRequest $request
+     * @param  string                $document_number
+     * @return void
+     */
+    public function destroy(DocumentDeleteRequest $request, $document_number)
     {
         // ドキュメントの削除
+        $document = Document::where('documents.document_number', '=', $document_number)->with('attributes')->first();
+        $document->delete();
+        DocumentFile::delete($document->document_path);
+
+        return response()->json([], 204);
     }
 }
