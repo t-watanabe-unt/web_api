@@ -32,4 +32,25 @@ class Document extends Model
 
         return $documentInfo;
     }
+
+    /**
+     * 登録しているファイル拡張子と比較
+     * 同一拡張子かをチェック
+     *
+     * @param  string $attribute
+     * @param  string $value
+     * @return boolean
+     */
+    public static function isValidFileExtension($attribute, $value)
+    {
+        $request = request()->all();
+        $documentNumber = request()->route('document_number');
+        $document = Document::where('document_number', $documentNumber)->first();
+
+        if ($document->document_extension !== $request['file']->getClientOriginalExtension()) {
+            return false;
+        }
+
+        return true;
+    }
 }

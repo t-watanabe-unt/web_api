@@ -140,4 +140,29 @@ class DocumentFile
     {
         Storage::delete($documentPath);
     }
+
+    /**
+     * Undocumented function
+     *
+     * @param  DocumentFileUpdateRequest $request
+     * @param  object                    $document
+     * @return DocumentFileUpload
+     */
+    public static function fileUpdate($request, $document)
+    {
+        $documentExtension = $request->file('file')->getClientOriginalExtension();
+        $documentName = basename($request->file('file')->getClientOriginalName(), '.' . $documentExtension);
+
+        // ファイル保存し、パスを取得
+        Storage::delete($document->document_path);
+        $fileName = self::generateFileName($document->document_number, $documentExtension);
+        $documentPath = $request->file('file')->storeAs(self::STORAGE_DIR, $fileName);
+        return new self(
+            $document->document_number,
+            $documentName,
+            $document->document_mime_type,
+            $document->document_extension,
+            $documentPath
+        );
+    }
 }
