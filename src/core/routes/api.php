@@ -32,7 +32,10 @@ Route::prefix('v1')->group(
                         Route::delete('/{document_number}', [DocumentsController::class, 'destroy'])->name('destroy');
 
                         // 文書の属性の更新
-                        Route::patch('/{document_number}/attributes', [DocumentsAtrributesController::class, 'updateAttribute'])->name('updateAttribute');
+                        Route::patch('/{document_number}/attributes/{key}', [DocumentsAtrributesController::class, 'updateAttribute'])->name('updateAttribute');
+
+                        // 文書の属性の削除
+                        Route::delete('/{document_number}/attributes/{key}', [DocumentsAtrributesController::class, 'destroy'])->name('destroyAttribute');
 
                         // 文書ファイルの取得(DL)
                         Route::get('/{document_number}/file', [DocumentsFilesController::class, 'download'])->name('download');

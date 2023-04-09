@@ -7,11 +7,16 @@ use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Support\Facades\Log;
 
 class Attribute extends Model
 {
     use HasFactory;
+
+    protected $fillable = [
+        'document_id',
+        'key',
+        'value'
+    ];
 
     public function document(): BelongsTo
     {
@@ -22,8 +27,8 @@ class Attribute extends Model
      * 文書登録時、文書の属性のkeyが10文字以内
      * かつ、英数字で入力されている
      *
-     * @param string $attribute
-     * @param string $value
+     * @param  string $attribute
+     * @param  string $value
      * @return boolean
      */
     public static function isValidAttributeNameWithRegister($attribute, $value)
@@ -39,8 +44,8 @@ class Attribute extends Model
      * 文書の属性のkeyが10文字以内
      * かつ、英数字で入力されている
      *
-     * @param string $attribute
-     * @param string $value
+     * @param  string $attribute
+     * @param  string $value
      * @return boolean
      */
     public static function isValidAttributeName($attribute, $value)
@@ -52,10 +57,26 @@ class Attribute extends Model
     }
 
     /**
+     * 文書の属性のkeyが10文字以内
+     * かつ、英数字で入力されている
+     *
+     * @param  string $attribute
+     * @param  string $value
+     * @return boolean
+     */
+    public static function isValidAttributeNameWithRoute($attribute, $value)
+    {
+        if (!preg_match('/^[a-zA-Z0-9]{1,10}+$/', $value) || empty($value)) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
      * 文書の属性を検索する比較演算子とVALUEのチェック
      *
-     * @param string $attribute
-     * @param array $value
+     * @param  string $attribute
+     * @param  array  $value
      * @return boolean
      */
     public static function isValidOperatorValue($attribute, $value)
@@ -102,7 +123,7 @@ class Attribute extends Model
     /**
      * 文書の属性から対象のdocument_idを取得する
      *
-     * @param array $attributes
+     * @param  array $attributes
      * @return object
      */
     public static function getDocumentIdByAttributes(array $attributes)
@@ -110,15 +131,17 @@ class Attribute extends Model
         $query = Attribute::join('documents', 'attributes.document_id', '=', 'documents.id');
         foreach ($attributes as $key => $values) {
             foreach ($values as $operator => $value) {
-                $query->orWhere(function (Builder $query) use ($key, $operator, $value) {
-                    $query->where('key', '=', $key);
-                    if ($operator === '=') {
-                        // 部分一致
-                        $query->where('value', "LIKE", "%" . $value . "%");
-                    } else {
-                        $query->where('value', $operator, $value);
+                $query->orWhere(
+                    function (Builder $query) use ($key, $operator, $value) {
+                        $query->where('key', '=', $key);
+                        if ($operator === '=') {
+                            // 部分一致
+                            $query->where('value', "LIKE", "%" . $value . "%");
+                        } else {
+                            $query->where('value', $operator, $value);
+                        }
                     }
-                });
+                );
             }
         }
         return $query->select('document_id')->get();

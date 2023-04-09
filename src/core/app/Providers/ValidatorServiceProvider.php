@@ -36,6 +36,13 @@ class ValidatorServiceProvider extends ServiceProvider
             }
         );
 
+        // 文書の属性のkeyのチェック(ルートパラメータ内)
+        Validator::extend(
+            'attribute_name_route', function ($attribute, $value, $parameters, $validator) {
+                return Attribute::isValidAttributeNameWithRoute($attribute, $value);
+            }
+        );
+
         // 文書検索時の比較演算子のチェック
         Validator::extend(
             'operator', function ($attribute, $value, $parameters, $validator) {
