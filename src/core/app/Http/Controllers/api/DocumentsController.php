@@ -8,6 +8,7 @@ use App\Http\Requests\DocumentSearchRequest;
 use App\Http\Requests\DocumentUploadRequest;
 use App\Http\Resources\DocumentCollection;
 use App\Http\Resources\DocumentResource;
+use App\Http\Resources\DocumentsCollection;
 use App\Models\Document;
 use App\Models\Attribute;
 use App\Models\DocumentFile;
@@ -66,7 +67,7 @@ class DocumentsController extends Controller
         // 検索結果を取得
         $documentIds = Attribute::getDocumentIdByAttributes($request->query());
         $responses = Document::whereIn('documents.id', collect($documentIds)->unique())->with('attributes')->get();
-        return new DocumentCollection(DocumentResource::collection($responses));
+        return new DocumentsCollection(DocumentResource::collection($responses));
     }
 
     /**

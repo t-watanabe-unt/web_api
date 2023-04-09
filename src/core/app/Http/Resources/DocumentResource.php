@@ -19,7 +19,7 @@ class DocumentResource extends JsonResource
             "document_name" => $this->document_name,
             "document_mime_type" => $this->document_mime_type,
         ];
-        if (isset($this->attributes)) {
+        if ($this->loadCount('attributes')) {
             $values = array_merge($values, $this->reformatData());
         }
         return $values;

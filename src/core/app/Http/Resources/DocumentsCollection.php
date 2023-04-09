@@ -4,9 +4,8 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\ResourceCollection;
-use Illuminate\Support\Facades\Log;
 
-class DocumentCollection extends ResourceCollection
+class DocumentsCollection extends ResourceCollection
 {
     /**
      * Transform the resource collection into an array.
@@ -15,8 +14,13 @@ class DocumentCollection extends ResourceCollection
      */
     public function toArray(Request $request): array
     {
-        $response = $this->collection->map->toArray($request)->all();
+        // 検索結果なしの場合
+        if (empty($this->count())) {
+            return [
+                'message' => __('messages.response.empty'),
+            ];
+        }
 
-        return $response[0];
+        return $this->collection->map->toArray($request)->all();
     }
 }
