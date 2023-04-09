@@ -27,6 +27,7 @@ class DocumentSearchRequest extends ApiCommonRequest
     {
         return [
             '*' => [
+                'bail',
                 'attribute_name',
                 'operator'
             ],

@@ -22,18 +22,21 @@ class DocumentFileUpdateRequest extends DocumentUploadRequest
      */
     public function rules(): array
     {
-        $rules = parent::rules();
-
-        // 継承先のルールを削除
-        unset($rules['attribute.*']);
-
-        $rules['file'][] = 'file_extension';
+        $rules = [];
         $rules['document_number'] = [
+            'bail',
             'required',
             'string',
             'uuid',
             'exists:App\Models\Document,document_number'
         ];
+        $parentRules = parent::rules();
+
+        // 継承先のルールを削除
+        unset($parentRules['attribute.*']);
+
+        $rules = array_merge($rules, $parentRules);
+        $rules['file'][] = 'file_extension';
 
         return $rules;
     }

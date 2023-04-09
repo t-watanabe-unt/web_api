@@ -26,6 +26,7 @@ class DocumentAttributesRequest extends ApiCommonRequest
     {
         return [
             'document_number' => [
+                'bail',
                 'required',
                 'string',
                 'uuid',

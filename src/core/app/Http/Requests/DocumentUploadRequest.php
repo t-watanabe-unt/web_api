@@ -27,6 +27,7 @@ class DocumentUploadRequest extends ApiCommonRequest
         $mimeTypeRules = implode(",", MimeTypesConstant::FILE_MIME_TYPES);
         return [
             'file' => [
+                'bail',
                 'required',
                 'file',
                 'mimes:'. $mimeRules,
