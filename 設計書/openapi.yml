@@ -171,7 +171,7 @@ paths:
         - in: path
           name: document_number
           schema:
-            type: integer
+            type: string
           required: true
           description: 文書番号
       responses:
@@ -213,7 +213,7 @@ paths:
         - in: path
           name: document_number
           schema:
-            type: integer
+            type: string
           required: true
           description: 文書番号
         - in: path
@@ -292,7 +292,7 @@ paths:
         - in: path
           name: document_number
           schema:
-            type: integer
+            type: string
           required: true
           description: 文書番号
       responses:
@@ -334,7 +334,7 @@ paths:
         - in: path
           name: document_number
           schema:
-            type: integer
+            type: string
           required: true
           description: 文書番号
       requestBody:
@@ -506,50 +506,50 @@ components:
               - type: object
                 properties:
                   items:
-                   type: object
-                   properties:
-                    document_number:
-                      type: string
-                      example: dku7sjdjosUsdj89
-                    document_name:
-                      type: string
-                      example: specification_api.pdf
-                    document_mime_type:
-                      type: string
-                      example: pdf
-                    title:
-                      type: string
-                      example: 公開作業手順書
-                    note:
-                      type: string
-                      example: Web公開手順
-                    created:
-                      type: string
-                      example: 2022-03-04
-                    updated:
-                      type: string
-                      example: 2023-01-12
+                    type: object
+                    properties:
+                      document_number:
+                        type: string
+                        example: dku7sjdjosUsdj89
+                      document_name:
+                        type: string
+                        example: specification_api.pdf
+                      document_mime_type:
+                        type: string
+                        example: pdf
+                      title:
+                        type: string
+                        example: 公開作業手順書
+                      note:
+                        type: string
+                        example: Web公開手順
+                      created:
+                        type: string
+                        example: 2022-03-04
+                      updated:
+                        type: string
+                        example: 2023-01-12
           example:
-              [
-                 {
-                  document_number: dku7sjdjosUsdj89,
-                  document_name: specification_api.pdf,
-                  document_mime_type: application/pdf,
-                  title: 公開作業手順書,
-                  note: Web公開手順,
-                  created: 2022-03-04,
-                  updated: 2023-01-12
-                },
-                {
-                  document_number: ss1soia9sasdoda,
-                  document_name: API仕様書.pdf,
-                  document_mime_type: application/pdf,
-                  title: 公開作業手順書,
-                  note: APIを公開するまで,
-                  created: 2022-03-04,
-                  updated: 2023-01-12
-                },
-              ]
+            [
+              {
+                document_number: dku7sjdjosUsdj89,
+                document_name: specification_api.pdf,
+                document_mime_type: application/pdf,
+                title: 公開作業手順書,
+                note: Web公開手順,
+                created: 2022-03-04,
+                updated: 2023-01-12,
+              },
+              {
+                document_number: ss1soia9sasdoda,
+                document_name: API仕様書.pdf,
+                document_mime_type: application/pdf,
+                title: 公開作業手順書,
+                note: APIを公開するまで,
+                created: 2022-03-04,
+                updated: 2023-01-12,
+              },
+            ]
     download:
       description: |
         ファイルダウンロード<br>
