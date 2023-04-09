@@ -43,6 +43,13 @@ class ValidatorServiceProvider extends ServiceProvider
             }
         );
 
+        // 文書番号と文書のkeyが一致するレコードの存在チェック
+        Validator::extend(
+            'exists_attribute_key', function ($attribute, $value, $parameters, $validator) {
+                return Attribute::isValidExistAttributeKey($attribute, $value);
+            }
+        );
+
         // 文書検索時の比較演算子のチェック
         Validator::extend(
             'operator', function ($attribute, $value, $parameters, $validator) {

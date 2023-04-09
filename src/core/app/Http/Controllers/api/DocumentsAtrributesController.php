@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\DocumentAttributeDeleteRequest;
 use App\Http\Requests\DocumentAttributesRequest;
 use App\Http\Resources\DocumentCollection;
 use App\Http\Resources\DocumentResource;
@@ -38,5 +39,30 @@ class DocumentsAtrributesController extends Controller
         );
         $response = Document::where('documents.id', $document->id)->with('attributes')->get();
         return new DocumentCollection(DocumentResource::collection($response));
+    }
+
+    /**
+     * 文書の属性を削除
+     *
+     * @param  DocumentAttributeDeleteRequest $request
+     * @param  string                         $document_number
+     * @param  string                         $key
+     * @return void
+     */
+    public function destroy(DocumentAttributeDeleteRequest $request, $document_number, $key)
+    {
+        $document = Document::where('document_number', '=', $document_number)->first();
+
+        // 削除対象のレコードを抽出
+        $attributeModel = new Attribute();
+        $attribute = $attributeModel->where(
+            [
+                'document_id' => $document->id,
+                'key' => $key
+            ]
+        )->first();
+        $attribute->delete();
+
+        return response()->json([], 204);
     }
 }

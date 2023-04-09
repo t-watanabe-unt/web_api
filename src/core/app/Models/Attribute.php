@@ -73,6 +73,30 @@ class Attribute extends Model
     }
 
     /**
+     * 文書番号と文書のkeyが一致するレコードの存在チェック
+     *
+     * @param  string $attribute
+     * @param  string $value
+     * @return boolean
+     */
+    public static function isValidExistAttributeKey($attribute, $value)
+    {
+        $document_number = request()->route('document_number');
+        $document = Document::where(
+            [
+                'documents.document_number' => $document_number,
+                'attributes.key' => $value,
+            ]
+        )->join('attributes', 'documents.id', '=', 'attributes.document_id')->first();
+
+        if (empty($document)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
      * 文書の属性を検索する比較演算子とVALUEのチェック
      *
      * @param  string $attribute
