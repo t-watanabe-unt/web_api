@@ -48,4 +48,30 @@ class MimeTypesConstant
         'video/webm',
         'video/x-msvideo',
     ];
+
+    /**
+     * 拡張子とMimeType
+     */
+    public const MIME_EXTENSION = [
+        'pdf' => 'application/pdf',
+        'docx' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+        'doc' => 'application/msword',
+        'dot' => 'application/msword',
+        'xlsx' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        'xls' => 'application/vnd.ms-excel',
+        'png' => 'image/png',
+        'jpeg' => 'image/jpeg',
+        'jpg' => 'image/jpeg',
+        'bmp' => 'image/bmp',
+        'svg' => 'image/svg+xml',
+        'svgz' => 'image/svg+xml',
+        'mp3' => 'audio/mpeg',
+        '3gp' => 'video/3gp',
+        'mp4' => 'video/mp4',
+        'mpeg' => 'video/mpeg',
+        'qt' => 'video/quicktime',
+        'mov' => 'video/quicktime',
+        'webm' => 'video/webm',
+        'avi' => 'video/x-msvideo',
+    ];
 }
