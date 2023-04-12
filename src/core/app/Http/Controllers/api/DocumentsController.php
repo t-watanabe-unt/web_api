@@ -28,7 +28,7 @@ class DocumentsController extends Controller
         $document = DB::transaction(
             function () use ($request) {
                 // ファイル処理、保存
-                $file = DocumentFile::storeFile($request);
+                $file = DocumentFile::storeFile($request->file('file'));
 
                 // 文書の保存
                 $documentModel = new Document();
@@ -81,8 +81,7 @@ class DocumentsController extends Controller
     {
         // ドキュメントの削除
         $document = Document::where('documents.document_number', '=', $document_number)->with('attributes')->first();
-        $document->delete();
-        DocumentFile::delete($document->document_path);
+        DocumentFile::fromDocument($document)->delete();
 
         return response()->json([], 204);
     }

@@ -41,7 +41,7 @@ class DocumentsFilesController extends Controller
     {
         // ファイルの更新
         $document = Document::where('document_number', '=', $document_number)->first();
-        $updatedDocument = DocumentFile::fileUpdate($request, $document);
+        $updatedDocument = DocumentFile::fileUpdate($request->file('file'), $document);
 
         // ファイル名更新
         $document->document_name = $updatedDocument->documentName();

@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Constants\ValidationConstant;
 use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -31,7 +30,7 @@ class Attribute extends Model
      * @param  string $value
      * @return boolean
      */
-    public static function isValidAttributeNameWithRegister($attribute, $value)
+    public static function isValidAttributeNameWithRegister($attribute)
     {
         $attribute = preg_replace('/attribute./', '', $attribute);
         if (!preg_match('/^[a-zA-Z0-9]{1,10}+$/', $attribute) || empty($attribute)) {
@@ -48,7 +47,7 @@ class Attribute extends Model
      * @param  string $value
      * @return boolean
      */
-    public static function isValidAttributeName($attribute, $value)
+    public static function isValidAttributeName($attribute)
     {
         if (!preg_match('/^[a-zA-Z0-9]{1,10}+$/', $attribute) || empty($attribute)) {
             return false;
@@ -64,7 +63,7 @@ class Attribute extends Model
      * @param  string $value
      * @return boolean
      */
-    public static function isValidAttributeNameWithRoute($attribute, $value)
+    public static function isValidAttributeNameWithRoute($value)
     {
         if (!preg_match('/^[a-zA-Z0-9]{1,10}+$/', $value) || empty($value)) {
             return false;
@@ -79,7 +78,7 @@ class Attribute extends Model
      * @param  string $value
      * @return boolean
      */
-    public static function isValidExistAttributeKey($attribute, $value)
+    public static function isValidExistAttributeKey($value)
     {
         $document_number = request()->route('document_number');
         $document = Document::where(
@@ -103,7 +102,7 @@ class Attribute extends Model
      * @param  array  $value
      * @return boolean
      */
-    public static function isValidOperatorValue($attribute, $value)
+    public static function isValidOperatorValue($value)
     {
         // 比較演算子がない
         if (!is_array($value)) {
@@ -112,12 +111,12 @@ class Attribute extends Model
 
         foreach ($value as $key => $vl) {
             // 比較演算子の入力チェック
-            if (!in_array($key, ValidationConstant::OPERATORS)) {
+            if (!in_array($key, config('validation.operators'))) {
                 return false;
             }
 
             // valueの入力数チェック
-            if (ValidationConstant::VALUE_MAX < mb_strlen($vl) || empty($vl)) {
+            if (config('validation.value.max') < mb_strlen($vl) || empty($vl)) {
                 return false;
             }
         }

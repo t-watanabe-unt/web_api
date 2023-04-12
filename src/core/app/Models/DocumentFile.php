@@ -75,21 +75,38 @@ class DocumentFile
     }
 
     /**
+     * 文書からインスタンス生成
+     *
+     * @param Document $document
+     * @return DocumentFile
+     */
+    public static function fromDocument($document)
+    {
+        return new self(
+            $document->document_number,
+            $document->document_name,
+            $document->document_mime_type,
+            $document->document_extension,
+            $document->document_path
+        );
+    }
+
+    /**
      * ファイル登録
      *
      * @param  DocumentUploadRequest $request
-     * @return DocumentFileUpload
+     * @return DocumentFile
      */
-    public static function storeFile($request)
+    public static function storeFile($file)
     {
         $documentNumber = Str::uuid();
-        $documentExtension = $request->file('file')->getClientOriginalExtension();
-        $documentName = basename($request->file('file')->getClientOriginalName(), '.' . $documentExtension);
-        $documentMimeType = $request->file('file')->getMimeType();
+        $documentExtension = $file->getClientOriginalExtension();
+        $documentName = basename($file->getClientOriginalName(), '.' . $documentExtension);
+        $documentMimeType = $file->getMimeType();
         $fileName = self::generateFileName($documentNumber, $documentExtension);
 
         // ファイル保存し、パスを取得
-        $documentPath = $request->file('file')->storeAs(self::STORAGE_DIR, $fileName);
+        $documentPath = $file->storeAs(self::STORAGE_DIR, $fileName);
         return new self($documentNumber, $documentName, $documentMimeType, $documentExtension, $documentPath);
     }
 
@@ -136,27 +153,28 @@ class DocumentFile
      * @param  string $documentPath
      * @return void
      */
-    public static function delete($documentPath)
+    public function delete()
     {
-        Storage::delete($documentPath);
+        Storage::delete($this->documentPath);
     }
 
     /**
-     * Undocumented function
+     * 文書のファイルを更新
+     * 更新後にインスタンスを返却
      *
      * @param  DocumentFileUpdateRequest $request
      * @param  object                    $document
-     * @return DocumentFileUpload
+     * @return DocumentFile
      */
-    public static function fileUpdate($request, $document)
+    public static function fileUpdate($file, $document)
     {
-        $documentExtension = $request->file('file')->getClientOriginalExtension();
-        $documentName = basename($request->file('file')->getClientOriginalName(), '.' . $documentExtension);
+        $documentExtension = $file->getClientOriginalExtension();
+        $documentName = basename($file->getClientOriginalName(), '.' . $documentExtension);
 
         // ファイル保存し、パスを取得
         Storage::delete($document->document_path);
         $fileName = self::generateFileName($document->document_number, $documentExtension);
-        $documentPath = $request->file('file')->storeAs(self::STORAGE_DIR, $fileName);
+        $documentPath = $file->storeAs(self::STORAGE_DIR, $fileName);
         return new self(
             $document->document_number,
             $documentName,

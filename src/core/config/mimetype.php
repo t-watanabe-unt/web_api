@@ -1,10 +1,8 @@
 <?php
 
-namespace App\Constants;
-
-class MimeTypesConstant
-{
-    public const FILE_EXTENSIONS = [
+return [
+    // ファイルの拡張子
+    'file_extension' => [
         'pdf',
         'docx',
         'doc',
@@ -25,10 +23,9 @@ class MimeTypesConstant
         'mov',
         'webm',
         'avi'
-    ];
-
-    // mimeタイプチェック用
-    public const FILE_MIME_TYPES = [
+    ],
+    // ファイルのMimeタイプ
+    'file_mime_types' => [
         'application/pdf',
         'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
         'application/msword',
@@ -47,12 +44,9 @@ class MimeTypesConstant
         'video/quicktime',
         'video/webm',
         'video/x-msvideo',
-    ];
-
-    /**
-     * 拡張子とMimeType
-     */
-    public const MIME_EXTENSION = [
+    ],
+    // ファイルの拡張子とMimeタイプ
+    'file_extension_mime_type' => [
         'pdf' => 'application/pdf',
         'docx' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
         'doc' => 'application/msword',
@@ -73,5 +67,5 @@ class MimeTypesConstant
         'mov' => 'video/quicktime',
         'webm' => 'video/webm',
         'avi' => 'video/x-msvideo',
-    ];
-}
+    ],
+];

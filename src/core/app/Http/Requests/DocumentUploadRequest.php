@@ -4,7 +4,6 @@ namespace App\Http\Requests;
 
 use Closure;
 use Illuminate\Foundation\Http\FormRequest;
-use App\Constants\MimeTypesConstant;
 
 class DocumentUploadRequest extends ApiCommonRequest
 {
@@ -23,8 +22,8 @@ class DocumentUploadRequest extends ApiCommonRequest
      */
     public function rules(): array
     {
-        $mimeRules = implode(",", MimeTypesConstant::FILE_EXTENSIONS);
-        $mimeTypeRules = implode(",", MimeTypesConstant::FILE_MIME_TYPES);
+        $mimeRules = implode(",", config('mimetype.file_extension'));
+        $mimeTypeRules = implode(",", config('mimetype.file_mime_types'));
         return [
             'file' => [
                 'bail',

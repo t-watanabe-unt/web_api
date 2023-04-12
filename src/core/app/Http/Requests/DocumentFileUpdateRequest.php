@@ -3,7 +3,6 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\Log;
 
 class DocumentFileUpdateRequest extends DocumentUploadRequest
 {
@@ -37,7 +36,6 @@ class DocumentFileUpdateRequest extends DocumentUploadRequest
 
         $rules = array_merge($rules, $parentRules);
         $rules['file'][] = 'file_extension';
-
         return $rules;
     }
 

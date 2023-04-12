@@ -5,7 +5,7 @@ namespace App\Providers;
 use App\Models\Attribute;
 use App\Models\Document;
 use Illuminate\Support\ServiceProvider;
-use Validator;
+use Illuminate\Support\Facades\Validator;
 
 class ValidatorServiceProvider extends ServiceProvider
 {
@@ -25,35 +25,35 @@ class ValidatorServiceProvider extends ServiceProvider
         // 文書の属性のkeyのチェック(文書登録時)
         Validator::extend(
             'attribute_name_register', function ($attribute, $value, $parameters, $validator) {
-                return Attribute::isValidAttributeNameWithRegister($attribute, $value);
+                return Attribute::isValidAttributeNameWithRegister($attribute);
             }
         );
 
         // 文書の属性のkeyのチェック(登録時以外)
         Validator::extend(
             'attribute_name', function ($attribute, $value, $parameters, $validator) {
-                return Attribute::isValidAttributeName($attribute, $value);
+                return Attribute::isValidAttributeName($attribute);
             }
         );
 
         // 文書の属性のkeyのチェック(ルートパラメータ内)
         Validator::extend(
             'attribute_name_route', function ($attribute, $value, $parameters, $validator) {
-                return Attribute::isValidAttributeNameWithRoute($attribute, $value);
+                return Attribute::isValidAttributeNameWithRoute($value);
             }
         );
 
         // 文書番号と文書のkeyが一致するレコードの存在チェック
         Validator::extend(
             'exists_attribute_key', function ($attribute, $value, $parameters, $validator) {
-                return Attribute::isValidExistAttributeKey($attribute, $value);
+                return Attribute::isValidExistAttributeKey($value);
             }
         );
 
         // 文書検索時の比較演算子のチェック
         Validator::extend(
             'operator', function ($attribute, $value, $parameters, $validator) {
-                return Attribute::isValidOperatorValue($attribute, $value);
+                return Attribute::isValidOperatorValue($value);
             }
         );
 

@@ -41,7 +41,7 @@ class Document extends Model
      * @param  string $value
      * @return boolean
      */
-    public static function isValidFileExtension($attribute, $value)
+    public static function isValidFileExtension()
     {
         $request = request()->all();
         $documentNumber = request()->route('document_number');
