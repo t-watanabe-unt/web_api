@@ -2,11 +2,10 @@
 
 namespace Tests\Feature;
 
-use App\Constants\MimeTypesConstant;
+use App\Models\Document;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\Log;
 use Tests\TestCase;
 
 class DocumentCommonFunctionsTest extends TestCase
@@ -64,10 +63,48 @@ class DocumentCommonFunctionsTest extends TestCase
     ];
 
     /**
-     * ファイルと文書の属性のレスポンス
+     * 文書の登録内容確認用の配列生成
+     * 入力値がDocumentsに登録されたレコードとして登録されているか
      *
-     * @param string $fileName
-     * @param string $mimeType
+     * @param object $file
+     * @return array
+     */
+    public function setDocumentForRegistered($file)
+    {
+        $registeredItem = [];
+        $documentExtension = $file->getClientOriginalExtension();
+        $registeredItem['document_name'] = basename($file->getClientOriginalName(), '.' . $documentExtension);
+        $registeredItem['document_mime_type'] = $file->getMimeType();
+        $registeredItem['document_extension'] = $documentExtension;
+
+        return $registeredItem;
+    }
+
+    /**
+     * 文書の属性の登録内容確認用の配列生成
+     * 入力値がattributesに登録されたレコードとして登録されているか
+     *
+     * @param array $attributes
+     * @return array
+     */
+    public function setAttributesForRegistered($attributes)
+    {
+        $registeredItem = [];
+        foreach ($attributes as $key => $value) {
+            $registeredItem = [
+                'key' => $key,
+                'value' => $value
+            ];
+        }
+        return $registeredItem;
+    }
+
+    /**
+     * ファイルと文書の属性のレスポンス(文書の登録時)
+     *
+     * @param array $requestBody
+     * @param array $responseBody
+     * @param int $statusCode
      * @return void
      */
     public function custom_postJson($requestBody, $responseBody, $statusCode)
@@ -75,10 +112,27 @@ class DocumentCommonFunctionsTest extends TestCase
         $response = $this->postJson(self::ROOT_REGISTER, $requestBody);
         $response->assertJsonStructure($responseBody);
         $response->assertStatus($statusCode);
+
+        // 正常に登録した場合
+        if (self::CODE_200 === $statusCode) {
+            // リクエスト後のレスポンスを取得(配列に戻す)
+            $registerd = json_decode($response->getContent(), true);
+            $document = Document::where('document_number', $registerd['document_number'])->first();
+            $registeredDocument = $this->setDocumentForRegistered($requestBody['file']);
+
+            // 文書の属性がある場合(存在チェック)
+            if (isset($requestBody['attribute'])) {
+                $registeredAttributes = $this->setAttributesForRegistered($requestBody['attribute']);
+                $registeredAttributes['document_id'] = $document->id;
+                $this->assertDatabaseHas('attributes', $registeredAttributes);
+            }
+            // 文書の登録(存在チェック)
+            $this->assertDatabaseHas('documents', $registeredDocument);
+        }
     }
 
     /**
-     * リクエストメソッド違いのチェック:文書の登録(ファイルと文書の属性)
+     * リクエストメソッド違いのチェック
      *
      * @param array $requestBody
      * @param string $method
@@ -115,23 +169,41 @@ class DocumentCommonFunctionsTest extends TestCase
     }
 
     /**
-     * テスト実行:文書登録
+     * テスト実行: 単一ファイルでのチェック
      *
      * @param array $mimeTypes
      * @param array $attributes
      * @return void
      */
-    public function run_testing($mimeTypes, $attributes = null)
+    public function run_one_extension($attributes = null)
+    {
+        $requestBody = $this->getRequestBodyForDocument('png', 'application/pdf', $attributes);
+        // 文書の属性なし
+        if (empty($attributes)) {
+            $this->custom_postJson($requestBody, self::RESPONSE_ARRAY_WITHOUT_ATTRIBUTE, self::CODE_200);
+        } else {
+            $responseBody = array_merge(self::RESPONSE_ARRAY_WITHOUT_ATTRIBUTE, array_keys($attributes));
+            $this->custom_postJson($requestBody, $responseBody, self::CODE_200);
+        }
+    }
+
+    /**
+     * テスト実行:全ファイルの拡張子でのチェック
+     *
+     * @param array $mimeTypes
+     * @param array $attributes
+     * @return void
+     */
+    public function run_all_extension($mimeTypes, $attributes = null)
     {
         foreach ($mimeTypes as $key => $value) {
             $requestBody = $this->getRequestBodyForDocument($key, $value, $attributes);
-
-            // 文書の属性有り
-            if (!is_null($attributes)) {
+            // 文書の属性なし
+            if (empty($attributes)) {
+                $this->custom_postJson($requestBody, self::RESPONSE_ARRAY_WITHOUT_ATTRIBUTE, self::CODE_200);
+            } else {
                 $responseBody = array_merge(self::RESPONSE_ARRAY_WITHOUT_ATTRIBUTE, array_keys($attributes));
                 $this->custom_postJson($requestBody, $responseBody, self::CODE_200);
-            } else {
-                $this->custom_postJson($requestBody, self::RESPONSE_ARRAY_WITHOUT_ATTRIBUTE, self::CODE_200);
             }
         }
     }

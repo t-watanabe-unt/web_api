@@ -2,7 +2,6 @@
 
 namespace Tests\Feature\Api\Error;
 
-use App\Constants\MimeTypesConstant;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\UploadedFile;
@@ -20,7 +19,7 @@ class DocumentRegisterErrorTest extends DocumentCommonFunctionsTest
     {
         $requestBody = [];
         $fileName = 'test.png';
-        $file = UploadedFile::fake()->create($fileName, 2000, MimeTypesConstant::MIME_EXTENSION['png']);
+        $file = UploadedFile::fake()->create($fileName, 2000, config('mimetype.file_extension.png'));
         $requestBody['file'] = $file;
         // 文書の登録(GETは、検索でバリデーションエラーとなるため400)
         $this->fail_anyJson($requestBody, 'getJson', self::RESPONSE_ERROR, self::CODE_400);
@@ -37,7 +36,7 @@ class DocumentRegisterErrorTest extends DocumentCommonFunctionsTest
     public function test_no_value(): void
     {
         $fileName = 'test.png';
-        $file = UploadedFile::fake()->create($fileName, 2000, MimeTypesConstant::MIME_EXTENSION['png']);
+        $file = UploadedFile::fake()->create($fileName, 2000, config('mimetype.file_extension.png'));
 
         // name属性:fileなし
         $this->no_name_file($file);
@@ -90,7 +89,7 @@ class DocumentRegisterErrorTest extends DocumentCommonFunctionsTest
     }
 
     /**
-     * Undocumented function
+     * リクエストボディ(文書の属性:keyが空)
      *
      * @param \Illuminate\Http\Testing\File $file
      * @return void
@@ -112,7 +111,7 @@ class DocumentRegisterErrorTest extends DocumentCommonFunctionsTest
     public function test_over_number_of_characterers(): void
     {
         $fileName = 'test.png';
-        $file = UploadedFile::fake()->create($fileName, 2000, MimeTypesConstant::MIME_EXTENSION['png']);
+        $file = UploadedFile::fake()->create($fileName, 2000, config('mimetype.file_extension.png'));
         // 文書の属性:Keyの入力値オーバー
         $this->over_10_character_key($file);
         // 文書の属性:Valueの入力値オーバー
@@ -146,19 +145,33 @@ class DocumentRegisterErrorTest extends DocumentCommonFunctionsTest
         $requestBody['attribute'] = [
             'title' => 'WEB_API仕様書ボリューム1.0.01',
         ];
-        $this->fail_anyJson($requestBody, 'postJson', self::RESPONSE_ERROR, self::CODE_400);
+        $this->custom_postJson($requestBody, self::RESPONSE_ERROR, self::CODE_400);
     }
 
     /**
-     * 指定外のMimeTypeでリクエスト
+     * 文書の属性のKeyに英数字以外を入力
      *
      * @return void
      */
-    // public function test_except_specified_mime_type(): void
-    // {
-    //     $attributes = [
-    //         'title' => 'APIドキュメント',
-    //     ];
-    //     $this->run_testing($attributes, self::EXCEPT_SPECIFIED_MIME_TYPE);
-    // }
+    public function test_regex_key(): void
+    {
+        $fileName = 'test.png';
+        $file = UploadedFile::fake()->create($fileName, 2000, config('mimetype.file_extension.png'));
+        $this->regex_key($file);
+    }
+
+    /**
+     * 文書の属性:Keyに英数字以外でリクエスト
+     *
+     * @param object $file
+     * @return void
+     */
+    private function regex_key($file)
+    {
+        $requestBody['file'] = $file;
+        $requestBody['attribute'] = [
+            'aあa' => 'WEB_API仕様書ボリューム1.0.01',
+        ];
+        $this->custom_postJson($requestBody, self::RESPONSE_ERROR, self::CODE_400);
+    }
 }

@@ -2,11 +2,8 @@
 
 namespace Tests\Feature\Api\Pass;
 
-use App\Constants\MimeTypesConstant;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\Log;
 use Tests\Feature\DocumentCommonFunctionsTest;
 use Tests\TestCase;
 
@@ -19,7 +16,17 @@ class DocumentRegisterPassTest extends DocumentCommonFunctionsTest
      */
     public function test_file_only(): void
     {
-        $this->run_testing(MimeTypesConstant::MIME_EXTENSION, []);
+        $this->run_one_extension();
+    }
+
+    /**
+     * テスト:対象のファイル拡張子全てのリクエスト
+     *
+     * @return void
+     */
+    public function test_all_mimetype(): void
+    {
+        $this->run_all_extension(config('mimetype.file_extension_mime_type'));
     }
 
     /**
@@ -32,7 +39,7 @@ class DocumentRegisterPassTest extends DocumentCommonFunctionsTest
         $attributes = [
             'title' => 'APIドキュメント',
         ];
-        $this->run_testing(MimeTypesConstant::MIME_EXTENSION, $attributes);
+        $this->run_one_extension($attributes);
     }
 
     /**
@@ -45,7 +52,7 @@ class DocumentRegisterPassTest extends DocumentCommonFunctionsTest
         $attributes = [
             'titletitle' => 'APIドキュメント',
         ];
-        $this->run_testing(MimeTypesConstant::MIME_EXTENSION, $attributes);
+        $this->run_one_extension($attributes);
     }
 
     /**
@@ -58,7 +65,7 @@ class DocumentRegisterPassTest extends DocumentCommonFunctionsTest
         $attributes = [
             'title' => 'APIドキュメント_2023.03.03',
         ];
-        $this->run_testing(MimeTypesConstant::MIME_EXTENSION, $attributes);
+        $this->run_one_extension($attributes);
     }
 
     /**
@@ -72,6 +79,6 @@ class DocumentRegisterPassTest extends DocumentCommonFunctionsTest
             'title' => 'API参考書',
             'date' => '2023-01-01'
         ];
-        $this->run_testing(MimeTypesConstant::MIME_EXTENSION, $attributes);
+        $this->run_one_extension($attributes);
     }
 }
