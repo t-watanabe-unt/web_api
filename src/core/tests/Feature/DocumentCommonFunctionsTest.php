@@ -7,6 +7,7 @@ use App\Models\DocumentFile;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Log;
 use Tests\TestCase;
 
 /**
@@ -17,7 +18,7 @@ class DocumentCommonFunctionsTest extends TestCase
     /**
      * ルート: 文書の登録,文書の検索
      */
-    const ROOT_REGISTER = 'api/v1/documents';
+    const ROOT_DOCUMENT = 'api/v1/documents';
 
     /**
      * ステータスコード
@@ -48,11 +49,12 @@ class DocumentCommonFunctionsTest extends TestCase
     /**
      * レスポンス形式: 文書の属性あり
      */
-    const RESPONSE_ARRAY_WITH_ATTRIBUTES = [
-        'document_number',
-        'document_name',
-        'document_mime_type',
-        '*',
+    const RESPONSE_ARRAY_SEARCH = [
+        '*' => [
+            'document_number',
+            'document_name',
+            'document_mime_type',
+        ]
     ];
 
     /**
@@ -113,7 +115,7 @@ class DocumentCommonFunctionsTest extends TestCase
      */
     public function custom_postJson($requestBody, $responseBody, $statusCode)
     {
-        $response = $this->postJson(self::ROOT_REGISTER, $requestBody);
+        $response = $this->postJson(self::ROOT_DOCUMENT, $requestBody);
         $response->assertJsonStructure($responseBody);
         $response->assertStatus($statusCode);
 
@@ -148,7 +150,7 @@ class DocumentCommonFunctionsTest extends TestCase
      */
     public function fail_anyJson($requestBody, $method, $responseBody, $statusCode)
     {
-        $response = $this->$method(self::ROOT_REGISTER, $requestBody);
+        $response = $this->$method(self::ROOT_DOCUMENT, $requestBody);
         $response->assertJsonStructure($responseBody);
         $response->assertStatus($statusCode);
     }
@@ -224,6 +226,30 @@ class DocumentCommonFunctionsTest extends TestCase
     public function deleteDocumentAfterTest($document_number)
     {
         $document = Document::where('documents.document_number', '=', $document_number)->with('attributes')->first();
+        $document->delete();
         DocumentFile::fromDocument($document)->delete();
+    }
+
+    /**
+     * テスト前に文書を登録する
+     *
+     * @param array $requestBody
+     * @param array $attributes
+     * @return void
+     */
+    public function registerDocumentBeforeTest($attributes = null)
+    {
+        $requestBody = $this->getRequestBodyForDocument('pdf', 'application/pdf', $attributes);
+        $response = $this->postJson(self::ROOT_DOCUMENT, $requestBody);
+        $response->assertStatus(self::CODE_200);
+        $registerd = json_decode($response->getContent(), true);
+
+        // 文書の属性なし
+        if (empty($attributes)) {
+            $document = Document::where('document_number', $registerd['document_number'])->first();
+        } else {
+            $document = Document::where('document_number', $registerd['document_number'])->with('attributes')->first();
+        }
+        return $document;
     }
 }
