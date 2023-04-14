@@ -7,6 +7,9 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Tests\Feature\DocumentCommonFunctionsTest;
 use Tests\TestCase;
 
+/**
+ * 文書登録の正常テスト
+ */
 class DocumentRegisterPassTest extends DocumentCommonFunctionsTest
 {
     /**

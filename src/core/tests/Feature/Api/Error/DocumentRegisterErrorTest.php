@@ -8,6 +8,9 @@ use Illuminate\Http\UploadedFile;
 use Tests\Feature\DocumentCommonFunctionsTest;
 use Tests\TestCase;
 
+/**
+ * 文書登録時の異常テスト
+ */
 class DocumentRegisterErrorTest extends DocumentCommonFunctionsTest
 {
     /**

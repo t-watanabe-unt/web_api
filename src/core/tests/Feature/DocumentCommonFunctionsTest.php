@@ -3,11 +3,15 @@
 namespace Tests\Feature;
 
 use App\Models\Document;
+use App\Models\DocumentFile;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\UploadedFile;
 use Tests\TestCase;
 
+/**
+ * 共通関数定義クラス
+ */
 class DocumentCommonFunctionsTest extends TestCase
 {
     /**
@@ -128,6 +132,9 @@ class DocumentCommonFunctionsTest extends TestCase
             }
             // 文書の登録(存在チェック)
             $this->assertDatabaseHas('documents', $registeredDocument);
+
+            // テスト後にレコードと文書ファイルの削除
+            $this->deleteDocumentAfterTest($registerd['document_number']);
         }
     }
 
@@ -206,5 +213,17 @@ class DocumentCommonFunctionsTest extends TestCase
                 $this->custom_postJson($requestBody, $responseBody, self::CODE_200);
             }
         }
+    }
+
+    /**
+     * 文書登録テスト後に、登録したレコードとファイルを削除する
+     *
+     * @param string $document_number
+     * @return void
+     */
+    public function deleteDocumentAfterTest($document_number)
+    {
+        $document = Document::where('documents.document_number', '=', $document_number)->with('attributes')->first();
+        DocumentFile::fromDocument($document)->delete();
     }
 }
