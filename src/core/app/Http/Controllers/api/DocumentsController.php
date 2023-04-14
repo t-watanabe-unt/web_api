@@ -81,6 +81,7 @@ class DocumentsController extends Controller
     {
         // ドキュメントの削除
         $document = Document::where('documents.document_number', '=', $document_number)->with('attributes')->first();
+        $document->delete();
         DocumentFile::fromDocument($document)->delete();
 
         return response()->json([], 204);
