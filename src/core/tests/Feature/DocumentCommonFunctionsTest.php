@@ -72,7 +72,7 @@ class DocumentCommonFunctionsTest extends TestCase
      * 文書の登録内容確認用の配列生成
      * 入力値がDocumentsに登録されたレコードとして登録されているか
      *
-     * @param object $file
+     * @param  object $file
      * @return array
      */
     public function setDocumentForRegistered($file)
@@ -90,7 +90,7 @@ class DocumentCommonFunctionsTest extends TestCase
      * 文書の属性の登録内容確認用の配列生成
      * 入力値がattributesに登録されたレコードとして登録されているか
      *
-     * @param array $attributes
+     * @param  array $attributes
      * @return array
      */
     public function setAttributesForRegistered($attributes)
@@ -108,9 +108,9 @@ class DocumentCommonFunctionsTest extends TestCase
     /**
      * ファイルと文書の属性のレスポンス(文書の登録時)
      *
-     * @param array $requestBody
-     * @param array $responseBody
-     * @param int $statusCode
+     * @param  array $requestBody
+     * @param  array $responseBody
+     * @param  int   $statusCode
      * @return void
      */
     public function custom_postJson($requestBody, $responseBody, $statusCode)
@@ -143,9 +143,9 @@ class DocumentCommonFunctionsTest extends TestCase
     /**
      * リクエストメソッド違いのチェック
      *
-     * @param array $requestBody
-     * @param string $method
-     * @param array $responseBody
+     * @param  array  $requestBody
+     * @param  string $method
+     * @param  array  $responseBody
      * @return void
      */
     public function fail_anyJson($requestBody, $method, $responseBody, $statusCode)
@@ -158,9 +158,9 @@ class DocumentCommonFunctionsTest extends TestCase
     /**
      * レスポンスボディの生成
      *
-     * @param string $fileExtension
-     * @param string $mimeType
-     * @param array $attributes
+     * @param  string $fileExtension
+     * @param  string $mimeType
+     * @param  array  $attributes
      * @return array
      */
     public function getRequestBodyForDocument($fileExtension, $mimeType, $attributes = null)
@@ -180,8 +180,8 @@ class DocumentCommonFunctionsTest extends TestCase
     /**
      * テスト実行: 単一ファイルでのチェック
      *
-     * @param array $mimeTypes
-     * @param array $attributes
+     * @param  array $mimeTypes
+     * @param  array $attributes
      * @return void
      */
     public function run_one_extension($attributes = null)
@@ -199,8 +199,8 @@ class DocumentCommonFunctionsTest extends TestCase
     /**
      * テスト実行:全ファイルの拡張子でのチェック
      *
-     * @param array $mimeTypes
-     * @param array $attributes
+     * @param  array $mimeTypes
+     * @param  array $attributes
      * @return void
      */
     public function run_all_extension($mimeTypes, $attributes = null)
@@ -220,7 +220,7 @@ class DocumentCommonFunctionsTest extends TestCase
     /**
      * 文書登録テスト後に、登録したレコードとファイルを削除する
      *
-     * @param string $document_number
+     * @param  string $document_number
      * @return void
      */
     public function deleteDocumentAfterTest($document_number)
@@ -233,8 +233,8 @@ class DocumentCommonFunctionsTest extends TestCase
     /**
      * テスト前に文書を登録する
      *
-     * @param array $requestBody
-     * @param array $attributes
+     * @param  array $requestBody
+     * @param  array $attributes
      * @return void
      */
     public function registerDocumentBeforeTest($attributes = null)
@@ -251,5 +251,75 @@ class DocumentCommonFunctionsTest extends TestCase
             $document = Document::where('document_number', $registerd['document_number'])->with('attributes')->first();
         }
         return $document;
+    }
+
+    /**
+     * 検索用クエリの生成
+     *
+     * @param  array  $searchParameter
+     * @param  string $operator
+     * @return void
+     */
+    public function getQueryParametes($searchParameter)
+    {
+        if (empty($searchParameter)) {
+            return '';
+        }
+
+        $query = "?";
+        $count = 0;
+        foreach ($searchParameter as $key => $values) {
+            foreach ($values as $operator => $value) {
+                if ($count > 0) {
+                    $query .= "&";
+                }
+                $encodedOperator = urlencode($operator);
+                $query .= sprintf("%s[%s]=%s", $key, $encodedOperator, $value);
+                $count++;
+            }
+        }
+        return $query;
+    }
+
+    /**
+     * 単一のクエリで検索
+     * 終了後に削除
+     *
+     * @param  array  $searchParameters
+     * @param  array  $responseBody
+     * @param  object $document
+     * @param  int    $statusCode
+     * @return void
+     */
+    public function searchWithOneQuery($searchParameter, $responseBody, $document, $statusCode)
+    {
+        $query = $this->getQueryParametes($searchParameter);
+        $response = $this->getJson(self::ROOT_DOCUMENT . $query);
+        $response->assertJsonStructure($responseBody);
+        $response->assertStatus($statusCode);
+        $this->deleteDocumentAfterTest($document->document_number);
+    }
+
+    /**
+     * 複数のクエリで検索
+     * 終了後削除
+     *
+     * @param  array  $searchParameters
+     * @param  array  $responseBody
+     * @param  object $documents
+     * @param  int    $statusCode
+     * @return void
+     */
+    public function searchWithSomeQuery($searchParameters, $responseBody, $documents, $statusCode)
+    {
+        $query = $this->getQueryParametes($searchParameters);
+        $response = $this->getJson(self::ROOT_DOCUMENT . $query);
+        $response->assertJsonStructure($responseBody);
+        $response->assertStatus($statusCode);
+
+        // // 複数ドキュメント削除
+        foreach ($documents as $document) {
+            $this->deleteDocumentAfterTest($document->document_number);
+        }
     }
 }
