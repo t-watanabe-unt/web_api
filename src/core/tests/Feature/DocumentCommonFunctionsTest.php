@@ -235,7 +235,7 @@ class DocumentCommonFunctionsTest extends TestCase
      *
      * @param  array $requestBody
      * @param  array $attributes
-     * @return void
+     * @return object
      */
     public function registerDocumentBeforeTest($attributes = null)
     {
@@ -258,7 +258,7 @@ class DocumentCommonFunctionsTest extends TestCase
      *
      * @param  array  $searchParameter
      * @param  string $operator
-     * @return void
+     * @return string
      */
     public function getQueryParametes($searchParameter)
     {
@@ -317,7 +317,7 @@ class DocumentCommonFunctionsTest extends TestCase
         $response->assertJsonStructure($responseBody);
         $response->assertStatus($statusCode);
 
-        // // 複数ドキュメント削除
+        // 複数ドキュメント削除
         foreach ($documents as $document) {
             $this->deleteDocumentAfterTest($document->document_number);
         }
