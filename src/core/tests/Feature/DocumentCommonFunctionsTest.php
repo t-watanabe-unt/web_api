@@ -237,9 +237,14 @@ class DocumentCommonFunctionsTest extends TestCase
      * @param  array $attributes
      * @return object
      */
-    public function registerDocumentBeforeTest($attributes = null)
+    public function registerDocumentBeforeTest($attributes = null, $mimeType = null)
     {
         $requestBody = $this->getRequestBodyForDocument('pdf', 'application/pdf', $attributes);
+
+        if (!empty($mimeType)) {
+            $requestBody = $this->getRequestBodyForDocument($mimeType['extension'], $mimeType['mimetype'], $attributes);
+        }
+
         $response = $this->postJson(self::ROOT_DOCUMENT, $requestBody);
         $response->assertStatus(self::CODE_200);
         $registerd = json_decode($response->getContent(), true);
@@ -321,5 +326,26 @@ class DocumentCommonFunctionsTest extends TestCase
         foreach ($documents as $document) {
             $this->deleteDocumentAfterTest($document->document_number);
         }
+    }
+
+    /**
+     * 指定した拡張子とMimeタイプによるテスト
+     *
+     * @param  array $ExtensionWithMimeType
+     * @return void
+     */
+    public function downloadWithAllMimetypes($ExtensionWithMimeType, $statusCode)
+    {
+        foreach ($ExtensionWithMimeType as $extension => $mimetype) {
+            $mimeType['extension'] = $extension;
+            $mimeType['mimetype'] = $mimetype;
+        }
+        $document = $this->registerDocumentBeforeTest([], $mimeType);
+        $root = sprintf('%s/%s/file', self::ROOT_DOCUMENT, $document->document_number);
+        $response = $this->getJson($root);
+        $response->assertDownload();
+        $response->assertHeader('content-type', $mimetype);
+        $response->assertStatus($statusCode);
+        $this->deleteDocumentAfterTest($document->document_number);
     }
 }
