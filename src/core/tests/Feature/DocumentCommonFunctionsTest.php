@@ -156,17 +156,24 @@ class DocumentCommonFunctionsTest extends TestCase
     }
 
     /**
-     * レスポンスボディの生成
+     * リクエストボディの生成
+     * 指定のリクエストボディに整形
      *
      * @param  string $fileExtension
      * @param  string $mimeType
      * @param  array  $attributes
      * @return array
      */
-    public function getRequestBodyForDocument($fileExtension, $mimeType, $attributes = null)
+    public function getRequestBodyForDocument($fileExtension, $mimeType, $attributes = null, $specifiedfileName = null)
     {
         $requestBody = [];
-        $fileName = 'test.' . $fileExtension;
+        $fileName = sprintf("test.%s", $fileExtension);
+
+        // ファイル名指定
+        if (!empty($specifiedfileName)) {
+            $fileName = sprintf("%s.%s", $specifiedfileName, $fileExtension);
+        }
+
         $file = UploadedFile::fake()->create($fileName, 2000, $mimeType);
         $requestBody['file'] = $file;
 
@@ -232,6 +239,7 @@ class DocumentCommonFunctionsTest extends TestCase
 
     /**
      * テスト前に文書を登録する
+     * 登録したいattributesとmimeTypeを指定
      *
      * @param  array $requestBody
      * @param  array $attributes
@@ -346,6 +354,28 @@ class DocumentCommonFunctionsTest extends TestCase
         $response->assertDownload();
         $response->assertHeader('content-type', $mimetype);
         $response->assertStatus($statusCode);
+        $this->deleteDocumentAfterTest($document->document_number);
+    }
+
+    /**
+     * 文書ファイルの更新テスト
+     *
+     * @param  int $statusCode
+     * @return void
+     */
+    public function fileUpdate($fileInfoForBeforeTest, $fileInfoForRequest, $statusCode)
+    {
+        $document = $this->registerDocumentBeforeTest([], $fileInfoForBeforeTest);
+        $requestBody = $this->getRequestBodyForDocument($fileInfoForRequest['extension'], $fileInfoForRequest['mimetype'], [], $fileInfoForRequest['filename']);
+        $root = sprintf('%s/%s/file', self::ROOT_DOCUMENT, $document->document_number);
+        $response = $this->patchJson($root, $requestBody);
+        $response->assertStatus($statusCode);
+
+        // 正常テストで、更新後の登録内容をチェック
+        if (self::CODE_200 === $statusCode) {
+            $registeredDocument = $this->setDocumentForRegistered($requestBody['file']);
+            $this->assertDatabaseHas('documents', $registeredDocument);
+        }
         $this->deleteDocumentAfterTest($document->document_number);
     }
 }
