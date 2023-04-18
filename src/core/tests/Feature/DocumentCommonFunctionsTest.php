@@ -409,4 +409,31 @@ class DocumentCommonFunctionsTest extends TestCase
 
         $this->deleteDocumentAfterTest($document->document_number);
     }
+
+    /**
+     * 登録されている文書の属性を削除
+     *
+     * @param  array  $attributes
+     * @param  string $key
+     * @param  int    $statusCode
+     * @return void
+     */
+    public function deleteAttribute($attributes, $key, $statusCode)
+    {
+        $document = $this->registerDocumentBeforeTest($attributes);
+        $root = sprintf("%s/%s/attributes/%s", self::ROOT_DOCUMENT, $document->document_number, $key);
+        $response = $this->deleteJson($root);
+        $response->assertStatus($statusCode);
+
+        // attributesでの更新内容をチェック
+        $registeredAttributes['key'] = $key;
+        $registeredAttributes['document_id'] = $document->id;
+        $response->assertStatus($statusCode);
+
+        if (self::CODE_204 === $statusCode) {
+            $this->assertDatabaseMissing('attributes', $registeredAttributes);
+        }
+
+        $this->deleteDocumentAfterTest($document->document_number);
+    }
 }
