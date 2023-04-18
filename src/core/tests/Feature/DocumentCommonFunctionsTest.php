@@ -378,4 +378,35 @@ class DocumentCommonFunctionsTest extends TestCase
         }
         $this->deleteDocumentAfterTest($document->document_number);
     }
+
+    /**
+     * 文書の属性の更新
+     *
+     * @param  array  $attributeBeforeTest
+     * @param  string $key
+     * @param  string $updateValue
+     * @param  int    $statusCode
+     * @return void
+     */
+    public function updateAttribute($attributeBeforeTest, $key, $updateValue, $statusCode)
+    {
+        $document = $this->registerDocumentBeforeTest($attributeBeforeTest);
+
+        // 変更する内容
+        $requestBody['value'] = $updateValue;
+        $attributesRegistered[$key] = $updateValue;
+        $root = sprintf("%s/%s/attributes/%s", self::ROOT_DOCUMENT, $document->document_number, $key);
+        $response = $this->patchJson($root, $requestBody);
+
+        // attributesでの更新内容をチェック
+        $registeredAttributes = $this->setAttributesForRegistered($attributesRegistered);
+        $registeredAttributes['document_id'] = $document->id;
+        $response->assertStatus($statusCode);
+
+        if (self::CODE_200 === $statusCode) {
+            $this->assertDatabaseHas('attributes', $registeredAttributes);
+        }
+
+        $this->deleteDocumentAfterTest($document->document_number);
+    }
 }
