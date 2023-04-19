@@ -16,6 +16,8 @@ class DocumentSearchPassTest extends DocumentCommonFunctionsTest
     /**
      * 検索結果なし(データなし)
      *
+     * @group  document
+     * @group  document_search_pass
      * @return void
      */
     public function test_no_data(): void
@@ -32,6 +34,8 @@ class DocumentSearchPassTest extends DocumentCommonFunctionsTest
      * 単一の文書のレスポンス形式の確認
      * 検索用でデータ登録後、そのデータが取得できるかをチェック
      *
+     * @group  document
+     * @group  document_search_pass
      * @return void
      */
     public function test_get_document(): void
@@ -48,6 +52,8 @@ class DocumentSearchPassTest extends DocumentCommonFunctionsTest
      * 単一の文書のレスポンス形式の確認(>=での確認)
      * 検索用でデータ登録後、そのデータが取得できるかをチェック
      *
+     * @group  document
+     * @group  document_search_pass
      * @return void
      */
     public function test_get_document_case2(): void
@@ -64,6 +70,8 @@ class DocumentSearchPassTest extends DocumentCommonFunctionsTest
      * 単一の文書のレスポンス形式の確認(<=での確認)
      * 検索用でデータ登録後、そのデータが取得できるかをチェック
      *
+     * @group  document
+     * @group  document_search_pass
      * @return void
      */
     public function test_get_document_case3(): void
@@ -80,6 +88,8 @@ class DocumentSearchPassTest extends DocumentCommonFunctionsTest
      * 単一の文書のレスポンス形式の確認(<=での確認)
      * 検索用でデータ登録後、そのデータが取得できるかをチェック
      *
+     * @group  document
+     * @group  document_search_pass
      * @return void
      */
     public function test_get_document_case4(): void
@@ -96,6 +106,8 @@ class DocumentSearchPassTest extends DocumentCommonFunctionsTest
      * 複数の文書のレスポンス形式の確認
      * 検索用でデータ登録後、そのデータが取得できるかをチェック
      *
+     * @group  document
+     * @group  document_search_pass
      * @return void
      */
     public function test_get_documents(): void
@@ -117,6 +129,8 @@ class DocumentSearchPassTest extends DocumentCommonFunctionsTest
     /**
      * 文書の属性Keyを10文字で検索
      *
+     * @group  document
+     * @group  document_search_pass
      * @return void
      */
     public function test_query_max_key(): void
@@ -132,6 +146,8 @@ class DocumentSearchPassTest extends DocumentCommonFunctionsTest
     /**
      * 文書の属性Valueを20文字で検索
      *
+     * @group  document
+     * @group  document_search_pass
      * @return void
      */
     public function test_query_max_value(): void

@@ -15,6 +15,8 @@ class DocumentAttributesUpdateErrorTest extends DocumentCommonFunctionsTest
     /**
      * ルーティングにKeyなし
      *
+     * @group  document_attributes
+     * @group  document_attributes_update_error
      * @return void
      */
     public function test_no_key_in_path(): void
@@ -25,6 +27,8 @@ class DocumentAttributesUpdateErrorTest extends DocumentCommonFunctionsTest
     /**
      * 存在しない文書番号
      *
+     * @group  document_attributes
+     * @group  document_attributes_update_error
      * @return void
      */
     public function test_no_exist_document_number(): void
@@ -37,6 +41,9 @@ class DocumentAttributesUpdateErrorTest extends DocumentCommonFunctionsTest
     /**
      * 文書番号の形式が異なる(uuid:ver4)
      * 文書番号のレコードが存在している
+     *
+     * @group document_attributes
+     * @group document_attributes_update_error
      */
     public function test_regex_document_number(): void
     {
@@ -50,6 +57,9 @@ class DocumentAttributesUpdateErrorTest extends DocumentCommonFunctionsTest
     /**
      * 文書の属性の登録
      * 文書の属性のKeyを11文字で入力
+     *
+     * @group document_attributes
+     * @group document_attributes_update_error
      */
     public function test_over_10_character_key(): void
     {
@@ -63,6 +73,9 @@ class DocumentAttributesUpdateErrorTest extends DocumentCommonFunctionsTest
     /**
      * 文書の属性の登録
      * 文書の属性のKeyを11文字で入力
+     *
+     * @group document_attributes
+     * @group document_attributes_update_error
      */
     public function test_regex_key(): void
     {
@@ -76,6 +89,9 @@ class DocumentAttributesUpdateErrorTest extends DocumentCommonFunctionsTest
     /**
      * 文書の属性の登録
      * 文書の属性のValueを21文字で入力
+     *
+     * @group document_attributes
+     * @group document_attributes_update_error
      */
     public function test_over_20_character_value(): void
     {

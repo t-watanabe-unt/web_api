@@ -15,6 +15,8 @@ class DocumentRegisterPassTest extends DocumentCommonFunctionsTest
     /**
      * テスト:ファイル単体のみのリクエスト
      *
+     * @group  document
+     * @group  document_register_pass
      * @return void
      */
     public function test_file_only(): void
@@ -25,6 +27,8 @@ class DocumentRegisterPassTest extends DocumentCommonFunctionsTest
     /**
      * テスト:対象のファイル拡張子全てのリクエスト
      *
+     * @group  document
+     * @group  document_register_pass
      * @return void
      */
     public function test_all_mimetype(): void
@@ -35,6 +39,8 @@ class DocumentRegisterPassTest extends DocumentCommonFunctionsTest
     /**
      * テスト:ファイルと文書の属性(単体)のリクエスト
      *
+     * @group  document
+     * @group  document_register_pass
      * @return void
      */
     public function test_file_with_attribute(): void
@@ -48,6 +54,8 @@ class DocumentRegisterPassTest extends DocumentCommonFunctionsTest
     /**
      * 文書の属性のKey最大値
      *
+     * @group  document
+     * @group  document_register_pass
      * @return void
      */
     public function test_file_with_attribute_max_key(): void
@@ -61,6 +69,8 @@ class DocumentRegisterPassTest extends DocumentCommonFunctionsTest
     /**
      * 文書の属性のValue最大値
      *
+     * @group  document
+     * @group  document_register_pass
      * @return void
      */
     public function test_file_with_attribute_max_value(): void
@@ -74,6 +84,8 @@ class DocumentRegisterPassTest extends DocumentCommonFunctionsTest
     /**
      * テスト:ファイルと文書の属性(複数)のリクエスト
      *
+     * @group  document
+     * @group  document_register_pass
      * @return void
      */
     public function test_file_with_attributes(): void

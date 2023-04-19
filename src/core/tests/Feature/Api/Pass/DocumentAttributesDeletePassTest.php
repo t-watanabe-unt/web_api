@@ -15,6 +15,9 @@ class DocumentAttributesDeletePassTest extends DocumentCommonFunctionsTest
     /**
      * 文書の属性の削除
      * 対象の文書に存在する属性Keyに対して更新(属性が1つのみ登録)
+     *
+     * @group document_attributes
+     * @group document_attributes_delete_pass
      */
     public function test_delete_from_an_attribute(): void
     {
@@ -27,6 +30,9 @@ class DocumentAttributesDeletePassTest extends DocumentCommonFunctionsTest
     /**
      * 文書の属性の削除
      * 対象の文書に存在する属性Keyに対して更新(属性が複数登録されてうちから1つを削除)
+     *
+     * @group document_attributes
+     * @group document_attributes_delete_pass
      */
     public function test_delete_from_some_attribute(): void
     {

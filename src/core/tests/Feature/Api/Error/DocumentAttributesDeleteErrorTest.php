@@ -15,6 +15,8 @@ class DocumentAttributesDeleteErrorTest extends DocumentCommonFunctionsTest
     /**
      * ルーティングにKeyなし
      *
+     * @group  document_attributes
+     * @group  document_attributes_delete_error
      * @return void
      */
     public function test_no_key_in_path(): void
@@ -28,6 +30,8 @@ class DocumentAttributesDeleteErrorTest extends DocumentCommonFunctionsTest
     /**
      * 存在しない文書番号
      *
+     * @group  document_attributes
+     * @group  document_attributes_delete_error
      * @return void
      */
     public function test_no_exist_document_number(): void
@@ -40,6 +44,8 @@ class DocumentAttributesDeleteErrorTest extends DocumentCommonFunctionsTest
     /**
      * 登録した文書の属性key以外でリクエスト
      *
+     * @group  document_attributes
+     * @group  document_attributes_delete_error
      * @return void
      */
     public function test_no_exist_key_in_path(): void
@@ -52,6 +58,9 @@ class DocumentAttributesDeleteErrorTest extends DocumentCommonFunctionsTest
     /**
      * 文書番号の形式が異なる(uuid:ver4)
      * 文書番号のレコードが存在している
+     *
+     * @group document_attributes
+     * @group document_attributes_delete_error
      */
     public function test_regex_document_number(): void
     {
@@ -65,6 +74,9 @@ class DocumentAttributesDeleteErrorTest extends DocumentCommonFunctionsTest
     /**
      * 文書の属性の登録
      * 文書の属性のKeyを11文字で入力
+     *
+     * @group document_attributes
+     * @group document_attributes_delete_error
      */
     public function test_over_10_character_key(): void
     {
@@ -76,6 +88,9 @@ class DocumentAttributesDeleteErrorTest extends DocumentCommonFunctionsTest
     /**
      * 文書の属性の登録
      * 文書の属性のKeyを英数字以外で入力
+     *
+     * @group document_attributes
+     * @group document_attributes_delete_error
      */
     public function test_regex_key(): void
     {

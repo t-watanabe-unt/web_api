@@ -15,6 +15,8 @@ class DocumentDeletePassTest extends DocumentCommonFunctionsTest
     /**
      * 文書の削除
      *
+     * @group  document
+     * @group  document_delete_pass
      * @return void
      */
     public function test_delete_document(): void

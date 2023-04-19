@@ -14,6 +14,9 @@ class DocumentFileDownloadErrorTest extends DocumentCommonFunctionsTest
 {
     /**
      * 文書番号が存在しない
+     *
+     * @group document_file
+     * @group document_file_download_error
      */
     public function test_no_exist_document_number(): void
     {
@@ -25,6 +28,9 @@ class DocumentFileDownloadErrorTest extends DocumentCommonFunctionsTest
     /**
      * 文書番号の形式が異なる(uuid:ver4)
      * 文書番号のレコードが存在している
+     *
+     * @group document_file
+     * @group document_file_download_error
      */
     public function test_regex_document_number(): void
     {

@@ -15,6 +15,9 @@ class DocumentAttributesUpdatePassTest extends DocumentCommonFunctionsTest
     /**
      * 文書の属性の更新
      * 対象の文書に存在する属性Keyに対して更新
+     *
+     * @group document_attributes
+     * @group document_attributes_update_pass
      */
     public function test_update_attribute(): void
     {
@@ -29,6 +32,9 @@ class DocumentAttributesUpdatePassTest extends DocumentCommonFunctionsTest
     /**
      * 文書の属性の登録
      * 対象の文書に存在する属性Keyに対して更新
+     *
+     * @group document_attributes
+     * @group document_attributes_update_pass
      */
     public function test_register_new_attribute(): void
     {
@@ -42,6 +48,9 @@ class DocumentAttributesUpdatePassTest extends DocumentCommonFunctionsTest
     /**
      * 文書の属性の登録
      * 文書の属性のKeyを10文字で入力
+     *
+     * @group document_attributes
+     * @group document_attributes_update_pass
      */
     public function test_register_new_attribute_10_character_key(): void
     {
@@ -55,6 +64,9 @@ class DocumentAttributesUpdatePassTest extends DocumentCommonFunctionsTest
     /**
      * 文書の属性の登録
      * 文書の属性のValueを20文字で入力
+     *
+     * @group document_attributes
+     * @group document_attributes_update_pass
      */
     public function test_register_new_attribute_20_character_value(): void
     {

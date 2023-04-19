@@ -16,6 +16,8 @@ class DocumentRegisterErrorTest extends DocumentCommonFunctionsTest
     /**
      * テスト:リクエスト形式違い
      *
+     * @group  document
+     * @group  document_register_error
      * @return void
      */
     public function test_different_request_method(): void
@@ -34,6 +36,8 @@ class DocumentRegisterErrorTest extends DocumentCommonFunctionsTest
     /**
      * テスト:リクエストのバリューなし
      *
+     * @group  document
+     * @group  document_register_error
      * @return void
      */
     public function test_no_value(): void
@@ -56,7 +60,7 @@ class DocumentRegisterErrorTest extends DocumentCommonFunctionsTest
     /**
      * name属性:fileなし
      *
-     * @param \Illuminate\Http\Testing\File $file
+     * @param  \Illuminate\Http\Testing\File $file
      * @return void
      */
     private function no_name_file($file)
@@ -79,7 +83,7 @@ class DocumentRegisterErrorTest extends DocumentCommonFunctionsTest
     /**
      * リクエストボディ(文書の属性:attributeが空)
      *
-     * @param \Illuminate\Http\Testing\File $file
+     * @param  \Illuminate\Http\Testing\File $file
      * @return void
      */
     private function no_value_attribute($file)
@@ -94,7 +98,7 @@ class DocumentRegisterErrorTest extends DocumentCommonFunctionsTest
     /**
      * リクエストボディ(文書の属性:keyが空)
      *
-     * @param \Illuminate\Http\Testing\File $file
+     * @param  \Illuminate\Http\Testing\File $file
      * @return void
      */
     private function no_key_attribute($file)
@@ -109,6 +113,8 @@ class DocumentRegisterErrorTest extends DocumentCommonFunctionsTest
     /**
      * 入力文字数の最大桁オーバー
      *
+     * @group  document
+     * @group  document_register_error
      * @return void
      */
     public function test_over_number_of_characterers(): void
@@ -124,7 +130,7 @@ class DocumentRegisterErrorTest extends DocumentCommonFunctionsTest
     /**
      * 文書の属性の`Key`の入力が10文字超え
      *
-     * @param \Illuminate\Http\Testing\File $file
+     * @param  \Illuminate\Http\Testing\File $file
      * @return void
      */
     private function over_10_character_key($file)
@@ -139,7 +145,7 @@ class DocumentRegisterErrorTest extends DocumentCommonFunctionsTest
     /**
      * 文書の属性の`Value`の入力が20文字超え
      *
-     * @param \Illuminate\Http\Testing\File $file
+     * @param  \Illuminate\Http\Testing\File $file
      * @return void
      */
     private function over_10_character_value($file)
@@ -154,6 +160,8 @@ class DocumentRegisterErrorTest extends DocumentCommonFunctionsTest
     /**
      * 文書の属性のKeyに英数字以外を入力
      *
+     * @group  document
+     * @group  document_register_error
      * @return void
      */
     public function test_regex_key(): void
@@ -166,7 +174,7 @@ class DocumentRegisterErrorTest extends DocumentCommonFunctionsTest
     /**
      * 文書の属性:Keyに英数字以外でリクエスト
      *
-     * @param object $file
+     * @param  object $file
      * @return void
      */
     private function regex_key($file)

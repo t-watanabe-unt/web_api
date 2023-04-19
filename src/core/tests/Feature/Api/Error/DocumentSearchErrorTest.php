@@ -15,6 +15,8 @@ class DocumentSearchErrorTest extends DocumentCommonFunctionsTest
     /**
      * クエリなし(データは存在する状態)
      *
+     * @group  document
+     * @group  document_search_error
      * @return void
      */
     public function test_no_query(): void
@@ -30,6 +32,8 @@ class DocumentSearchErrorTest extends DocumentCommonFunctionsTest
     /**
      * クエリの文書の属性Keyが空(データは存在する状態)
      *
+     * @group  document
+     * @group  document_search_error
      * @return void
      */
     public function test_no_key(): void
@@ -45,6 +49,8 @@ class DocumentSearchErrorTest extends DocumentCommonFunctionsTest
     /**
      * クエリの文書の属性Operatorが空(データは存在する状態)
      *
+     * @group  document
+     * @group  document_search_error
      * @return void
      */
     public function test_no_operator(): void
@@ -60,6 +66,8 @@ class DocumentSearchErrorTest extends DocumentCommonFunctionsTest
     /**
      * クエリの文書の属性Valueが空(データは存在する状態)
      *
+     * @group  document
+     * @group  document_search_error
      * @return void
      */
     public function test_no_value(): void
@@ -76,6 +84,8 @@ class DocumentSearchErrorTest extends DocumentCommonFunctionsTest
      * クエリの文書の属性入力で複数入力
      * 片方は、正常だが片方は異常な入力(データは存在する状態)
      *
+     * @group  document
+     * @group  document_search_error
      * @return void
      */
     public function test_comvine_invalid_query(): void
@@ -92,6 +102,8 @@ class DocumentSearchErrorTest extends DocumentCommonFunctionsTest
     /**
      * クエリの文書の属性Keyが11文字以上(データは存在する状態)
      *
+     * @group  document
+     * @group  document_search_error
      * @return void
      */
     public function test_10_character_key(): void
@@ -107,6 +119,8 @@ class DocumentSearchErrorTest extends DocumentCommonFunctionsTest
     /**
      * クエリの文書の属性Valueが21文字以上(データは存在する状態)
      *
+     * @group  document
+     * @group  document_search_error
      * @return void
      */
     public function test_20_character_value(): void
@@ -122,6 +136,8 @@ class DocumentSearchErrorTest extends DocumentCommonFunctionsTest
     /**
      * クエリの文書の属性Keyが英数字以外(データは存在する状態)
      *
+     * @group  document
+     * @group  document_search_error
      * @return void
      */
     public function test_regex_key(): void
@@ -137,6 +153,8 @@ class DocumentSearchErrorTest extends DocumentCommonFunctionsTest
     /**
      * 比較演算子が指定値以外(データは存在する状態)
      *
+     * @group  document
+     * @group  document_search_error
      * @return void
      */
     public function test_regex_operator_case1(): void
@@ -152,6 +170,8 @@ class DocumentSearchErrorTest extends DocumentCommonFunctionsTest
     /**
      * 比較演算子が指定値以外(データは存在する状態)
      *
+     * @group  document
+     * @group  document_search_error
      * @return void
      */
     public function test_regex_operator_case2(): void
@@ -167,6 +187,8 @@ class DocumentSearchErrorTest extends DocumentCommonFunctionsTest
     /**
      * 比較演算子が指定値以外(データは存在する状態)
      *
+     * @group  document
+     * @group  document_search_error
      * @return void
      */
     public function test_regex_operator_case3(): void
@@ -182,6 +204,8 @@ class DocumentSearchErrorTest extends DocumentCommonFunctionsTest
     /**
      * 比較演算子が指定値以外(データは存在する状態)
      *
+     * @group  document
+     * @group  document_search_error
      * @return void
      */
     public function test_regex_operator_case4(): void
@@ -197,6 +221,8 @@ class DocumentSearchErrorTest extends DocumentCommonFunctionsTest
     /**
      * 比較演算子が指定値以外(データは存在する状態)
      *
+     * @group  document
+     * @group  document_search_error
      * @return void
      */
     public function test_regex_operator_case5(): void

@@ -16,6 +16,9 @@ class DocumentFileUpdatePassTest extends DocumentCommonFunctionsTest
     /**
      * 文書のファイルの更新(同一拡張子とMimeタイプでの更新)
      * 文書を登録しその文書に対して更新処理を行う
+     *
+     * @group document_file
+     * @group document_file_update_pass
      */
     public function test_document_file_update(): void
     {

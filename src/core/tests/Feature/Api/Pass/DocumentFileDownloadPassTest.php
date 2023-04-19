@@ -17,6 +17,8 @@ class DocumentFileDownloadPassTest extends DocumentCommonFunctionsTest
      * 許可しているファイルの拡張子とMimeタイプのテスト
      * 文書を登録後に、その登録したファイルをDLする
      *
+     * @group  document_file
+     * @group  document_file_download_pass
      * @return void
      */
     public function test_download_with_permission(): void

@@ -14,6 +14,9 @@ class DocumentFileUpdateErrorTest extends DocumentCommonFunctionsTest
 {
     /**
      * 登録されている拡張子とリクエストされた拡張子が異なる
+     *
+     * @group document_file
+     * @group document_file_update_error
      */
     public function test_different_extension(): void
     {
@@ -31,6 +34,8 @@ class DocumentFileUpdateErrorTest extends DocumentCommonFunctionsTest
     /**
      * リクエストボディなし
      *
+     * @group  document_file
+     * @group  document_file_update_error
      * @return void
      */
     public function test_no_file(): void
@@ -45,6 +50,8 @@ class DocumentFileUpdateErrorTest extends DocumentCommonFunctionsTest
     /**
      * 存在しない文書番号
      *
+     * @group  document_file
+     * @group  document_file_update_error
      * @return void
      */
     public function test_no_exist_document_number(): void
@@ -57,6 +64,9 @@ class DocumentFileUpdateErrorTest extends DocumentCommonFunctionsTest
     /**
      * 文書番号の形式が異なる(uuid:ver4)
      * 文書番号のレコードが存在している
+     *
+     * @group document_file
+     * @group document_file_update_error
      */
     public function test_regex_document_number(): void
     {
