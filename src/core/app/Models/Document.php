@@ -37,17 +37,16 @@ class Document extends Model
      * 登録しているファイル拡張子と比較
      * 同一拡張子かをチェック
      *
-     * @param  string $attribute
-     * @param  string $value
+     * @param object $value
+     * @param string $documentNumber
      * @return boolean
      */
-    public static function isValidFileExtension()
+    public static function isValidFileExtension($value, $documentNumber)
     {
-        $request = request()->all();
-        $documentNumber = request()->route('document_number');
+        // リクエストされた文書番号から登録されている文書を取得
         $document = Document::where('document_number', $documentNumber)->first();
 
-        if ($document->document_extension !== $request['file']->getClientOriginalExtension()) {
+        if ($document->document_extension !== $value->getClientOriginalExtension()) {
             return false;
         }
 

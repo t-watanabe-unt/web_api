@@ -46,7 +46,8 @@ class ValidatorServiceProvider extends ServiceProvider
         // 文書番号と文書のkeyが一致するレコードの存在チェック
         Validator::extend(
             'exists_attribute_key', function ($attribute, $value, $parameters, $validator) {
-                return Attribute::isValidExistAttributeKey($value);
+                $documentNumber = request()->route('document_number');
+                return Attribute::isValidExistAttributeKey($value, $documentNumber);
             }
         );
 
@@ -57,10 +58,11 @@ class ValidatorServiceProvider extends ServiceProvider
             }
         );
 
-        // 文書検索時の比較演算子のチェック
+        // 登録されている文書の拡張子と入力された文書ファイルの拡張子をチェック
         Validator::extend(
             'file_extension', function ($attribute, $value, $parameters, $validator) {
-                return Document::isValidFileExtension($attribute, $value);
+                $documentNumber = request()->route('document_number');
+                return Document::isValidFileExtension($value, $documentNumber);
             }
         );
     }

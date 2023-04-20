@@ -27,7 +27,6 @@ class Attribute extends Model
      * かつ、英数字で入力されている
      *
      * @param  string $attribute
-     * @param  string $value
      * @return boolean
      */
     public static function isValidAttributeNameWithRegister($attribute)
@@ -44,7 +43,6 @@ class Attribute extends Model
      * かつ、英数字で入力されている
      *
      * @param  string $attribute
-     * @param  string $value
      * @return boolean
      */
     public static function isValidAttributeName($attribute)
@@ -59,7 +57,6 @@ class Attribute extends Model
      * 文書の属性のkeyが10文字以内
      * かつ、英数字で入力されている
      *
-     * @param  string $attribute
      * @param  string $value
      * @return boolean
      */
@@ -74,16 +71,15 @@ class Attribute extends Model
     /**
      * 文書番号と文書のkeyが一致するレコードの存在チェック
      *
-     * @param  string $attribute
      * @param  string $value
+     * @param  string $documentNumber
      * @return boolean
      */
-    public static function isValidExistAttributeKey($value)
+    public static function isValidExistAttributeKey($value, $documentNumber)
     {
-        $document_number = request()->route('document_number');
         $document = Document::where(
             [
-                'documents.document_number' => $document_number,
+                'documents.document_number' => $documentNumber,
                 'attributes.key' => $value,
             ]
         )->join('attributes', 'documents.id', '=', 'attributes.document_id')->first();
@@ -98,7 +94,6 @@ class Attribute extends Model
     /**
      * 文書の属性を検索する比較演算子とVALUEのチェック
      *
-     * @param  string $attribute
      * @param  array  $value
      * @return boolean
      */
@@ -130,7 +125,7 @@ class Attribute extends Model
      * @param  array   $attributes
      * @return void
      */
-    public function create(int $documentId,array $attributes)
+    public function create(int $documentId, array $attributes)
     {
         $values = [];
         foreach ($attributes as $key => $value) {
