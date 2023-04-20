@@ -97,9 +97,8 @@ class DocumentFile
      * @param  DocumentUploadRequest $request
      * @return DocumentFile
      */
-    public static function storeFile($file)
+    public static function storeFile($file, $documentNumber)
     {
-        $documentNumber = Str::uuid();
         $documentExtension = $file->getClientOriginalExtension();
         $documentName = basename($file->getClientOriginalName(), '.' . $documentExtension);
         $documentMimeType = $file->getMimeType();

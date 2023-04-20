@@ -11,6 +11,7 @@ use App\Http\Resources\DocumentResource;
 use App\Http\Resources\DocumentsCollection;
 use App\Models\Document;
 use App\Models\Attribute;
+use App\Models\CreateDocumentNumber;
 use App\Models\DocumentFile;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -28,7 +29,8 @@ class DocumentsController extends Controller
         $document = DB::transaction(
             function () use ($request) {
                 // ファイル処理、保存
-                $file = DocumentFile::storeFile($request->file('file'));
+                $documentNumber = CreateDocumentNumber::makeByUuidVer4();
+                $file = DocumentFile::storeFile($request->file('file'), $documentNumber);
 
                 // 文書の保存
                 $documentModel = new Document();
