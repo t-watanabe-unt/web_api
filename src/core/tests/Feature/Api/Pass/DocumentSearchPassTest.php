@@ -23,8 +23,8 @@ class DocumentSearchPassTest extends DocumentCommonFunctionsTest
     public function test_no_data(): void
     {
         // 登録なしで検索
-        $encodedOperator = urlencode('=');
-        $parameter = "?title[$encodedOperator]=API";
+        $encodedOperator = urlencode('%');
+        $parameter = "?title[$encodedOperator]=料理本";
         $response = $this->getJson(self::ROOT_DOCUMENT . $parameter);
         $response->assertJsonStructure(self::RESPONSE_ERROR);
         $response->assertStatus(self::CODE_200);
@@ -44,7 +44,7 @@ class DocumentSearchPassTest extends DocumentCommonFunctionsTest
         $document = $this->registerDocumentBeforeTest($attribute);
 
         // 検索用パラメータをセット(key,比較演算子,value)
-        $searchParameter['title'] = ['=' => 'api'];
+        $searchParameter['title'] = ['%' => 'api'];
         $this->searchWithOneQuery($searchParameter, self::RESPONSE_ARRAY_SEARCH, $document, self::CODE_200);
     }
 
@@ -121,7 +121,7 @@ class DocumentSearchPassTest extends DocumentCommonFunctionsTest
             $documents[] = $this->registerDocumentBeforeTest($attribute);
         }
         // 検索用パラメータをセット(key,比較演算子,value)
-        $searchParameters['title'] = ['=' => 'api'];
+        $searchParameters['title'] = ['%' => 'api'];
         $searchParameters['date'] = ['>' => '2023-01-01'];
         $this->searchWithSomeQuery($searchParameters, self::RESPONSE_ARRAY_SEARCH, $documents, self::CODE_200);
     }
@@ -139,7 +139,7 @@ class DocumentSearchPassTest extends DocumentCommonFunctionsTest
         $document = $this->registerDocumentBeforeTest($attribute);
 
         // 検索用パラメータをセット(key,比較演算子,value)
-        $searchParameter['titletitle'] = ['=' => 'api'];
+        $searchParameter['titletitle'] = ['%' => 'api'];
         $this->searchWithOneQuery($searchParameter, self::RESPONSE_ARRAY_SEARCH, $document, self::CODE_200);
     }
 
@@ -156,7 +156,7 @@ class DocumentSearchPassTest extends DocumentCommonFunctionsTest
         $document = $this->registerDocumentBeforeTest($attribute);
 
         // 検索用パラメータをセット(key,比較演算子,value)
-        $searchParameter['title'] = ['=' => 'api'];
+        $searchParameter['title'] = ['%' => 'api'];
         $this->searchWithOneQuery($searchParameter, self::RESPONSE_ARRAY_SEARCH, $document, self::CODE_200);
     }
 }

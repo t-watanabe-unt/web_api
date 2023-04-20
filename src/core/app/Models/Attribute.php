@@ -152,7 +152,7 @@ class Attribute extends Model
                 $query->orWhere(
                     function (Builder $query) use ($key, $operator, $value) {
                         $query->where('key', '=', $key);
-                        if ($operator === '=') {
+                        if ($operator === '%') {
                             // 部分一致
                             $query->where('value', "LIKE", "%" . $value . "%");
                         } else {

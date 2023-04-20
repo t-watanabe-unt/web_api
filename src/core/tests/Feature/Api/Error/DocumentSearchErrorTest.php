@@ -42,7 +42,7 @@ class DocumentSearchErrorTest extends DocumentCommonFunctionsTest
         $document = $this->registerDocumentBeforeTest($attribute);
 
         // 検索用パラメータをセット(key,比較演算子,value)
-        $searchParameter[''] = ['=' => 'api'];
+        $searchParameter[''] = ['%' => 'api'];
         $this->searchWithOneQuery($searchParameter, self::RESPONSE_ERROR, $document, self::CODE_400);
     }
 
@@ -76,7 +76,7 @@ class DocumentSearchErrorTest extends DocumentCommonFunctionsTest
         $document = $this->registerDocumentBeforeTest($attribute);
 
         // 検索用パラメータをセット(key,比較演算子,value)
-        $searchParameter['title'] = ['=' => ''];
+        $searchParameter['title'] = ['%' => ''];
         $this->searchWithOneQuery($searchParameter, self::RESPONSE_ERROR, $document, self::CODE_400);
     }
 
@@ -94,7 +94,7 @@ class DocumentSearchErrorTest extends DocumentCommonFunctionsTest
         $document = $this->registerDocumentBeforeTest($attribute);
 
         // 検索用パラメータをセット(key,比較演算子,value)
-        $searchParameter['title'] = ['=' => ''];
+        $searchParameter['title'] = ['%' => ''];
         $searchParameter['date'] = ['>' => '2023-03-01'];
         $this->searchWithOneQuery($searchParameter, self::RESPONSE_ERROR, $document, self::CODE_400);
     }
@@ -112,7 +112,7 @@ class DocumentSearchErrorTest extends DocumentCommonFunctionsTest
         $document = $this->registerDocumentBeforeTest($attribute);
 
         // 検索用パラメータをセット(key,比較演算子,value)
-        $searchParameter['titletitle1'] = ['=' => 'api'];
+        $searchParameter['titletitle1'] = ['%' => 'api'];
         $this->searchWithOneQuery($searchParameter, self::RESPONSE_ERROR, $document, self::CODE_400);
     }
 
@@ -129,7 +129,7 @@ class DocumentSearchErrorTest extends DocumentCommonFunctionsTest
         $document = $this->registerDocumentBeforeTest($attribute);
 
         // 検索用パラメータをセット(key,比較演算子,value)
-        $searchParameter['title'] = ['=' => 'WEB_API仕様書ボリューム1.0.01'];
+        $searchParameter['title'] = ['%' => 'WEB_API仕様書ボリューム1.0.01'];
         $this->searchWithOneQuery($searchParameter, self::RESPONSE_ERROR, $document, self::CODE_400);
     }
 
@@ -146,7 +146,7 @@ class DocumentSearchErrorTest extends DocumentCommonFunctionsTest
         $document = $this->registerDocumentBeforeTest($attribute);
 
         // 検索用パラメータをセット(key,比較演算子,value)
-        $searchParameter['aあa'] = ['=' => 'api'];
+        $searchParameter['aあa'] = ['%' => 'api'];
         $this->searchWithOneQuery($searchParameter, self::RESPONSE_ERROR, $document, self::CODE_400);
     }
 
@@ -197,7 +197,7 @@ class DocumentSearchErrorTest extends DocumentCommonFunctionsTest
         $document = $this->registerDocumentBeforeTest($attribute);
 
         // 検索用パラメータをセット(key,比較演算子,value)
-        $searchParameter['title'] = ['=`;' => 'api'];
+        $searchParameter['title'] = ['=' => 'api'];
         $this->searchWithOneQuery($searchParameter, self::RESPONSE_ERROR, $document, self::CODE_400);
     }
 
