@@ -185,4 +185,22 @@ class DocumentRegisterErrorTest extends DocumentCommonFunctionsTest
         ];
         $this->custom_postJson($requestBody, self::RESPONSE_ERROR, self::CODE_400);
     }
+
+    /**
+     * ファイルサイズが100MBを超えた時
+     *
+     * @group document
+     * @group document_register_error
+     * @return void
+     */
+    public function test_over_size_100mb(): void
+    {
+        $requestBody = [];
+        $fileName = 'test.png';
+
+        // ファイルサイズを指定(101MB)
+        $file = UploadedFile::fake()->create($fileName, 101000, config('mimetype.file_extension.png'));
+        $requestBody['file'] = $file;
+        $this->custom_postJson($requestBody, self::RESPONSE_ERROR, self::CODE_400);
+    }
 }

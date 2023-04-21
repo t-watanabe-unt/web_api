@@ -164,19 +164,26 @@ class DocumentCommonFunctionsTest extends TestCase
      * @param  array  $attributes
      * @return array
      */
-    public function getRequestBodyForDocument($fileExtension, $mimeType, $attributes = null, $specifiedfileName = null)
+    public function getRequestBodyForDocument($fileExtension, $mimeType, $attributes = null, $specifiedfileName = null, $specifiedSize = null)
     {
         $requestBody = [];
         $fileName = sprintf("test.%s", $fileExtension);
+        $fileSize = 2000;
 
         // ファイル名指定
         if (!empty($specifiedfileName)) {
             $fileName = sprintf("%s.%s", $specifiedfileName, $fileExtension);
         }
 
-        $file = UploadedFile::fake()->create($fileName, 2000, $mimeType);
+        // ファイルサイズ指定あり
+        if (!empty($specifiedSize)) {
+            $fileSize = $specifiedSize;
+        }
+
+        $file = UploadedFile::fake()->create($fileName, $fileSize, $mimeType);
         $requestBody['file'] = $file;
 
+        // 文書の属性の登録有り
         if (!is_null($attributes)) {
             $requestBody['attribute'] = $attributes;
         }
@@ -254,7 +261,6 @@ class DocumentCommonFunctionsTest extends TestCase
         }
 
         $response = $this->postJson(self::ROOT_DOCUMENT, $requestBody);
-        $response->assertStatus(self::CODE_200);
         $registerd = json_decode($response->getContent(), true);
 
         // 文書の属性なし

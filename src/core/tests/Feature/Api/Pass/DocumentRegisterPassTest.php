@@ -4,6 +4,7 @@ namespace Tests\Feature\Api\Pass;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Http\UploadedFile;
 use Tests\Feature\DocumentCommonFunctionsTest;
 use Tests\TestCase;
 
@@ -95,5 +96,23 @@ class DocumentRegisterPassTest extends DocumentCommonFunctionsTest
             'date' => '2023-01-01'
         ];
         $this->run_one_extension($attributes);
+    }
+
+    /**
+     * ファイルサイズが100MBちょうどの時
+     *
+     * @group document
+     * @group document_register_pass
+     * @return void
+     */
+    public function test_just_size_100mb(): void
+    {
+        $requestBody = [];
+        $fileName = 'test.png';
+
+        // ファイルサイズを指定(101MB)
+        $file = UploadedFile::fake()->create($fileName, 100000, config('mimetype.file_extension.png'));
+        $requestBody['file'] = $file;
+        $this->custom_postJson($requestBody, self::RESPONSE_ARRAY_WITHOUT_ATTRIBUTE, self::CODE_200);
     }
 }

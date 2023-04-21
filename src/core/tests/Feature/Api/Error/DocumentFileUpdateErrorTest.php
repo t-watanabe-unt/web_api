@@ -76,4 +76,23 @@ class DocumentFileUpdateErrorTest extends DocumentCommonFunctionsTest
         $response->assertStatus(self::CODE_400);
         $this->deleteDocumentAfterTest($document->document_number);
     }
+
+    /**
+     * ファイルサイズが100MBを超えた時
+     *
+     * @group  document_file
+     * @group  document_file_update_error
+     * @return void
+     */
+    public function test_over_size_100mb(): void
+    {
+        $document = $this->registerDocumentBeforeTest();
+
+        // ファイルサイズを指定(101MB)
+        $requestBody = $this->getRequestBodyForDocument('pdf', config('mimetype.file_extension_mime_type.pdf'), [], '', 101000);
+        $root = sprintf('%s/%s/file', self::ROOT_DOCUMENT, $document->document_number);
+        $response = $this->patchJson($root, $requestBody);
+        $response->assertStatus(self::CODE_400);
+        $this->deleteDocumentAfterTest($document->document_number);
+    }
 }

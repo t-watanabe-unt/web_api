@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use Closure;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rules\File;
 
 class DocumentUploadRequest extends ApiCommonRequest
 {
@@ -29,6 +30,7 @@ class DocumentUploadRequest extends ApiCommonRequest
                 'bail',
                 'required',
                 'file',
+                'max:100000',
                 'mimes:'. $mimeRules,
                 'mimetypes:'. $mimeTypeRules,
             ],

@@ -34,4 +34,23 @@ class DocumentFileUpdatePassTest extends DocumentCommonFunctionsTest
             $this->fileUpdate($fileInfoForBeforeTest, $fileInfoForRequest, self::CODE_200);
         }
     }
+
+    /**
+     * ファイルサイズが100MBちょうどの時
+     *
+     * @group  document_file
+     * @group  document_file_update_pass
+     * @return void
+     */
+    public function test_just_size_100mb(): void
+    {
+        $document = $this->registerDocumentBeforeTest();
+
+        // ファイルサイズを指定(101MB)
+        $requestBody = $this->getRequestBodyForDocument('pdf', config('mimetype.file_extension_mime_type.pdf'), [], '', 100000);
+        $root = sprintf('%s/%s/file', self::ROOT_DOCUMENT, $document->document_number);
+        $response = $this->patchJson($root, $requestBody);
+        $response->assertStatus(self::CODE_200);
+        $this->deleteDocumentAfterTest($document->document_number);
+    }
 }
