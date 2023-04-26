@@ -28,7 +28,7 @@ return [
     |
     */
 
-    'env' => env('APP_ENV', 'production'),
+    'env' => env('APP_ENV', 'testing'),
 
     /*
     |--------------------------------------------------------------------------
@@ -215,7 +215,9 @@ return [
     )->toArray(),
 
 
-    // レートリミットの回数を指定
-    'maxAttempts' => env('MAX_ATTEMPTS_PER_MINUTE'),
-
+    // 環境ごとのレートリミットの回数を指定
+    'maxAttempts' => [
+        'testing' => 300,
+        'default' => 100,
+    ],
 ];
