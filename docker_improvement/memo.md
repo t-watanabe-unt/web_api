@@ -11,12 +11,17 @@ i)使えない理由は
 
 ii)改善ポイント
     ・Dockerfile?で、テーブルも作成するようにコマンドを準備
+        - docker-compose.yml内で、sqlファイルをディレクトリを指定
+        - docker-compose.yml内で、`initdb`でテーブルを読み込むコマンド追加
     ・Dockerfileで、vendorもインストールするコマンドを準備
     ・Dockerfileで、シンボリックリンクを張るコマンドを準備
 
 ・汎用性が全くない
 
 ・dockerhubの機能を全く使っていない
+
+・php-fpmでエラーになる
+    修正後のファイルをDockerfile内で初めに取り込んでおく
 
 ■ポイント
 ・ aptの場合、キャッシュを削除することで、
