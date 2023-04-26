@@ -214,4 +214,8 @@ return [
         ]
     )->toArray(),
 
+
+    // レートリミットの回数を指定
+    'maxAttempts' => env('MAX_ATTEMPTS_PER_MINUTE'),
+
 ];
