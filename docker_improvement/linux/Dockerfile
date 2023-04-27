@@ -31,7 +31,6 @@ COPY ./httpd/conf.d/ssl.conf /etc/httpd/conf.d/
 COPY ./pki/tls/certs/localhost.crt /etc/pki/tls/certs/
 COPY ./pki/tls/private/localhost.key /etc/pki/tls/private/
 
-# yum repository追加
 # EPEL
 # remi
 # mysql
@@ -43,23 +42,12 @@ RUN dnf install -y epel-release \
     && dnf -y module disable mysql \
     && dnf config-manager --enable mysql80-community
 
-# phpインストール、バージョンに合わせて変更
-# 使用したいPHPのモジュールに合わせて変更
+# php、モジュールのインストール、バージョンに合わせて変更
+# 使用したいPHPのモジュール(最低限のものだけ)
 RUN dnf module install -y php:remi-8.1 \
     && dnf install -y php \
-    php-gd \
-    php-json \
-    php-mbstring \
     php-pdo \
-    php-mysqlnd \
-    php-pear \
-    php-pecl-zip \
-    php-xml \
-    php-intl \
-    php-pecl-mcrypt \
-    php-devel \
-    php-opcache \
-    php-bcmath
+    php-mysqlnd
 
 # php設定ファイル配置
 # php-fpm設定内容修正
@@ -76,7 +64,6 @@ RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
 # postfixのインストール
 # httpdの起動設定
 RUN dnf -y install mysql-community-client \
-    && dnf -y install postfix \
     && systemctl enable httpd
 
 # ポートを公開

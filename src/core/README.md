@@ -22,7 +22,18 @@ docker-compose exec web php artisan storage:link
 ### ▼ディレクトリ移動
 docker-compose exec web mv public /var/www/WWW/public
 
+### ▼DBへテーブルのSQL流し込み(Laravel artisanコマンド)
+docker-compose exec web php artisan migrate
+
 # テストコマンド
+
+### テスト開始前
+1. .envファイルの`APP_ENV` を`testing` へ変更する
+2. 変更後、エディター上で`docker-compose exec web php artisan config:cache` コマンドで`.env` ファイルを再読み込みさせる
+3. `docker-compose exec web php artisan env` コマンドで、反映されているかを確認する
+   →`The application environment is [testing].  ` と表示されれば、切り替わっている
+4. ENVがtestingであれば、以下のテストコマンドを全て実行可能となる
+*`APP_ENV` がtestingの時に、`RouteServiceProvider` 内でRateLimitの回数の設定を切り替えている
 
 |区分|テスト内容|コマンド|
 |---|---|---|
