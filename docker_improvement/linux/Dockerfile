@@ -84,5 +84,8 @@ EXPOSE 443
 
 WORKDIR /var/www/core
 
+# 緩やかな停止(graceful-stop)
+STOPSIGNAL SIGWINCH
+
 # initを起動する
 CMD ["/sbin/init"]
