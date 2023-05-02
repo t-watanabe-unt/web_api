@@ -6,32 +6,46 @@
     `https://github.com/t-watanabe-unt/web_api.git`
 2. PCのエディター上で、docker-compose.ymlファイルのあるディレクトリへ移動する
    `cd {appディレクトリ}`
-3.  `docker-compose build` のコマンドでdockerの開発環境をビルドする
-4.  ビルド完了後、`docker-compose up -d` コマンドでdockerを立ち上げる
-5.  以下のコマンドを順番にエディター上で入力し実行する
+3. `docker-compose build` のコマンドでdockerの開発環境をビルドする
+4. ビルド完了後、`docker-compose up -d` コマンドでdockerを立ち上げる
+5. 以下のコマンドを順番にエディター上で入力し実行する
 
-### ▼composerインストール
+#### ▼env反映のためにキャッシュクリア
+
+docker-compose exec web php artisan config:cache
+
+#### ▼env反映されているか確認(Environmentの設定値を確認)
+
+docker-compose exec web php artisan about
+
+#### ▼composerインストール
+
 docker-compose exec web composer install
 
-### ▼権限付与(storage)
+#### ▼権限付与(storage)
+
 docker-compose exec web chown apache:apache -R storage
 
-### ▼シンボリックリンク付与    
+#### ▼シンボリックリンク付与
+
 docker-compose exec web php artisan storage:link
 
-### ▼ディレクトリ移動
+#### ▼ディレクトリ移動
+
 docker-compose exec web mv public /var/www/WWW/public
 
-### ▼DBへテーブルのSQL流し込み(Laravel artisanコマンド)
+#### ▼DBへテーブルのSQL流し込み(Laravel artisanコマンド)
+
 docker-compose exec web php artisan migrate
 
 # テストコマンド
 
-### テスト開始前
+#### テスト開始前
+
 1. .envファイルの`APP_ENV` を`testing` へ変更する
 2. 変更後、エディター上で`docker-compose exec web php artisan config:cache` コマンドで`.env` ファイルを再読み込みさせる
 3. `docker-compose exec web php artisan env` コマンドで、反映されているかを確認する
-   →`The application environment is [testing].  ` と表示されれば、切り替わっている
+   →`The application environment is [testing].` と表示されれば、切り替わっている
 4. ENVがtestingであれば、以下のテストコマンドを全て実行可能となる
 *`APP_ENV` がtestingの時に、`RouteServiceProvider` 内でRateLimitの回数の設定を切り替えている
 
