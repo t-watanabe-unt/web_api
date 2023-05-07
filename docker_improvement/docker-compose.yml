@@ -8,18 +8,16 @@ services:
     ports:
       - 80:80
       - 443:443
-    # コンテナに配置するファイルの場所、webアプリケーションの構成に合わせて変更
+    # ボリュームにするディレクトリを指定
     volumes:
       - ../src:/var/www/
-    # 読み込みたい設定ファイル以外はコメントアウトする
+      - ../src/core/storage:/var/www/core/storage
+    # 環境に合わせたファイルを設定
     env_file:
       - ./env_setting/.env_local
       # - ./env_setting/.env_testing
       # - ./env_setting/.env_staging
       # - ./env_setting/.env_production
-    privileged: true
-    tty: true
-    stdin_open: true
     depends_on:
       - mysql
     networks:
