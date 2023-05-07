@@ -14,6 +14,7 @@ services:
     # 読み込みたい設定ファイル以外はコメントアウトする
     env_file:
       - ./env_setting/.env_local
+      # - ./env_setting/.env_testing
       # - ./env_setting/.env_staging
       # - ./env_setting/.env_production
     privileged: true

@@ -9,7 +9,7 @@ RUN rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-AlmaLinux \
     && rm -rf /var/cache/*
 
 # ロケールと文字コードの設定
-RUN localedef -f UTF-8 -i ja_JP ja_JP.UTF-8 
+RUN localedef -f UTF-8 -i ja_JP ja_JP.UTF-8
 ENV LANG="ja_JP.UTF-8" \
     LANGUAGE="ja_JP:ja" \
     LC_ALL="ja_JP.UTF-8"
@@ -57,6 +57,11 @@ RUN dnf module install -y php:remi-8.1 \
     && dnf clean all \
     && rm -rf /var/cache/*
 
+# コンテナのプロセスを変更
+# Apache MPMをeventからpreforkに変更
+RUN sed -i 's/^LoadModule mpm_event_module/#LoadModule mpm_event_module/' /etc/httpd/conf.modules.d/00-mpm.conf \
+    && sed -i 's/^#LoadModule mpm_prefork_module/LoadModule mpm_prefork_module/' /etc/httpd/conf.modules.d/00-mpm.conf
+
 # php設定ファイル配置
 # php-fpm設定内容修正
 COPY ./php/php.ini /etc/
@@ -71,8 +76,8 @@ RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
     && rm -rf /var/cache/*
 
 # mysqlクライアントインストール
-# postfixのインストール
 # httpdの起動設定
+# Apacheのログを標準出力に出力する設定
 RUN dnf -y install mysql-community-client \
     && systemctl enable httpd \
     && dnf clean all \
@@ -87,5 +92,5 @@ WORKDIR /var/www/core
 # 緩やかな停止(graceful-stop)
 STOPSIGNAL SIGWINCH
 
-# initを起動する
-CMD ["/sbin/init"]
+# 1プロセスで起動するように修正
+CMD ["httpd", "-DFOREGROUND"]
