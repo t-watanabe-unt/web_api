@@ -3,8 +3,8 @@ version: '3.7'
 services:
   web:
     platform: linux/x86_64
-    build: "./linux"
-    container_name: "web-api_imp"
+    build: "./docker/linux"
+    container_name: "web-api"
     ports:
       - 80:80
       - 443:443
@@ -12,12 +12,8 @@ services:
     volumes:
       - ../src:/var/www/
       - ../src/core/storage:/var/www/core/storage
-    # 環境に合わせたファイルを設定
-    env_file:
-      - ./env_setting/.env_local
-      # - ./env_setting/.env_testing
-      # - ./env_setting/.env_staging
-      # - ./env_setting/.env_production
+    environment:
+      APP_ENV: local
     depends_on:
       - mysql
     networks:
@@ -26,7 +22,7 @@ services:
     platform: linux/x86_64
     #mysqlのバージョンに合わせて変更
     image: mysql:8.0.32
-    container_name: "db-api_imp"
+    container_name: "db-api"
     volumes:
       - db_data:/var/lib/mysql
     environment:
@@ -41,7 +37,7 @@ services:
       - br0
   phpmyadmin:
     platform: linux/x86_64
-    container_name: "phpmyadmin-web-api_imp"
+    container_name: "phpmyadmin-web-api"
     depends_on:
       - mysql
     image: phpmyadmin/phpmyadmin
@@ -50,7 +46,7 @@ services:
     ports:
       - 8080:80
     volumes:
-      - ./phpmyadmin/phpmyadmin-misc.ini:/usr/local/etc/php/conf.d/phpmyadmin-misc.ini
+      - ./docker/phpmyadmin/phpmyadmin-misc.ini:/usr/local/etc/php/conf.d/phpmyadmin-misc.ini
     networks:
       - br0
 volumes:
