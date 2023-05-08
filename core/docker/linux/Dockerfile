@@ -2,8 +2,7 @@
 FROM almalinux:8.6
 
 # dnf updateしてkernelなどを最新化する
-RUN rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-AlmaLinux \
-    && dnf update -y \
+RUN dnf update -y \
     && dnf -y install glibc-locale-source glibc-langpack-ja \
     && dnf clean all \
     && rm -rf /var/cache/*
@@ -18,39 +17,27 @@ ENV LANG="ja_JP.UTF-8" \
 RUN ln -sf /usr/share/zoneinfo/Asia/Tokyo /etc/localtime
 
 # httpd、その他必要なモジュールのインストール
-RUN dnf -y install dnf-plugin-config-manager \
-    httpd \
-    zip \
+RUN dnf -y install httpd \
     unzip \
     vim \
-    tree \
-    git \
-    mod_ssl \
     && dnf clean all \
     && rm -rf /var/cache/*
 
 # httpd系の設定ファイル配置
 COPY ./httpd/conf/httpd.conf /etc/httpd/conf/
 COPY ./httpd/conf.d/ssl.conf /etc/httpd/conf.d/
-COPY ./pki/tls/certs/localhost.crt /etc/pki/tls/certs/
-COPY ./pki/tls/private/localhost.key /etc/pki/tls/private/
 
-# EPEL
-# remi
-# mysql
+# EPEL,remi
 RUN dnf install -y epel-release \
     && dnf -y install https://rpms.remirepo.net/enterprise/remi-release-8.rpm \
     && dnf config-manager --set-enabled remi \
-    && dnf -y install https://dev.mysql.com/get/mysql80-community-release-el8-4.noarch.rpm \
-    && rpm --import https://repo.mysql.com/RPM-GPG-KEY-mysql-2022 \
-    && dnf -y module disable mysql \
-    && dnf config-manager --enable mysql80-community \
     && dnf clean all \
     && rm -rf /var/cache/*
 
 # php、モジュールのインストール、バージョンに合わせて変更
 # 使用したいPHPのモジュール(最低限のものだけ)
 RUN dnf module install -y php:remi-8.1 \
+    composer \
     && dnf install -y php \
     php-pdo \
     php-mysqlnd \
@@ -67,19 +54,9 @@ RUN sed -i 's/^LoadModule mpm_event_module/#LoadModule mpm_event_module/' /etc/h
 COPY ./php/php.ini /etc/
 COPY ./php/www.conf /etc/php-fpm.d/www.conf
 
-# composerインストール
-RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
-    && php composer-setup.php \
-    && php -r "unlink('composer-setup.php');" \
-    && mv composer.phar /usr/local/bin/composer \
-    && dnf clean all \
-    && rm -rf /var/cache/*
-
-# mysqlクライアントインストール
 # httpdの起動設定
 # Apacheのログを標準出力に出力する設定
-RUN dnf -y install mysql-community-client \
-    && systemctl enable httpd \
+RUN dnf -y install systemctl enable httpd \
     && dnf clean all \
     && rm -rf /var/cache/*
 
