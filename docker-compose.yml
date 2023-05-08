@@ -3,17 +3,17 @@ version: '3.7'
 services:
   web:
     platform: linux/x86_64
-    build: "./docker/linux"
+    build: "./core/docker/linux"
     container_name: "web-api"
     ports:
       - 80:80
       - 443:443
     # ボリュームにするディレクトリを指定
     volumes:
-      - ../src:/var/www/
-      - ../src/core/storage:/var/www/core/storage
+      - ./:/var/www/
+      - ./core/storage:/var/www/core/storage
     environment:
-      APP_ENV: local
+      APP_ENV: testing
     depends_on:
       - mysql
     networks:
@@ -46,7 +46,7 @@ services:
     ports:
       - 8080:80
     volumes:
-      - ./docker/phpmyadmin/phpmyadmin-misc.ini:/usr/local/etc/php/conf.d/phpmyadmin-misc.ini
+      - ./core/docker/phpmyadmin/phpmyadmin-misc.ini:/usr/local/etc/php/conf.d/phpmyadmin-misc.ini
     networks:
       - br0
 volumes:

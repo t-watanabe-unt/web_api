@@ -3,39 +3,32 @@
 # 開発環境構築手順
 
 1. 以下のURLより、アプリケーション用のファイルをcloneする
-    `https://github.com/t-watanabe-unt/web_api.git`
+    `clone https://github.com/t-watanabe-unt/web_api.git`
 2. PCのエディター上で、docker-compose.ymlファイルのあるディレクトリへ移動する
    `cd {appディレクトリ}`
 3. `docker-compose build` のコマンドでdockerの開発環境をビルドする
 4. ビルド完了後、`docker-compose up -d` コマンドでdockerを立ち上げる
 5. 以下のコマンドを順番にエディター上で入力し実行する
 
-#### ▼env反映のためにキャッシュクリア
+#### ▼composerインストール
+docker-compose exec web composer install
 
+#### ▼env反映のためにキャッシュクリア
 docker-compose exec web php artisan config:cache
 
 #### ▼env反映されているか確認(Environmentの設定値を確認)
-
 docker-compose exec web php artisan about
 
-#### ▼composerインストール
-
-docker-compose exec web composer install
-
 #### ▼権限付与(storage)
-
 docker-compose exec web chown apache:apache -R storage
 
 #### ▼シンボリックリンク付与
-
 docker-compose exec web php artisan storage:link
 
 #### ▼ディレクトリ移動
-
 docker-compose exec web mv public /var/www/WWW/public
 
 #### ▼DBへテーブルのSQL流し込み(Laravel artisanコマンド)
-
 docker-compose exec web php artisan migrate
 
 # テストコマンド
