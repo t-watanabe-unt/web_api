@@ -25,7 +25,6 @@ RUN dnf -y install httpd \
 
 # httpd系の設定ファイル配置
 COPY ./httpd/conf/httpd.conf /etc/httpd/conf/
-COPY ./httpd/conf.d/ssl.conf /etc/httpd/conf.d/
 
 # EPEL,remi
 RUN dnf install -y epel-release \
@@ -55,14 +54,12 @@ COPY ./php/php.ini /etc/
 COPY ./php/www.conf /etc/php-fpm.d/www.conf
 
 # httpdの起動設定
-# Apacheのログを標準出力に出力する設定
-RUN dnf -y install systemctl enable httpd \
+RUN systemctl enable httpd \
     && dnf clean all \
     && rm -rf /var/cache/*
 
 # ポートを公開
 EXPOSE 80
-EXPOSE 443
 
 WORKDIR /var/www/core
 
