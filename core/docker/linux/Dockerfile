@@ -26,16 +26,13 @@ RUN dnf -y install httpd \
 # httpd系の設定ファイル配置
 COPY ./httpd/conf/httpd.conf /etc/httpd/conf/
 
-# EPEL,remi
+# EPEL,remi,phpモジュール
+# php、モジュールのインストール、バージョンに合わせて変更
+# 使用したいPHPのモジュール(最低限のものだけ)
 RUN dnf install -y epel-release \
     && dnf -y install https://rpms.remirepo.net/enterprise/remi-release-8.rpm \
     && dnf config-manager --set-enabled remi \
-    && dnf clean all \
-    && rm -rf /var/cache/*
-
-# php、モジュールのインストール、バージョンに合わせて変更
-# 使用したいPHPのモジュール(最低限のものだけ)
-RUN dnf module install -y php:remi-8.1 \
+    && dnf module install -y php:remi-8.1 \
     composer \
     && dnf install -y php \
     php-pdo \
@@ -52,11 +49,6 @@ RUN sed -i 's/^LoadModule mpm_event_module/#LoadModule mpm_event_module/' /etc/h
 # php-fpm設定内容修正
 COPY ./php/php.ini /etc/
 COPY ./php/www.conf /etc/php-fpm.d/www.conf
-
-# httpdの起動設定
-RUN systemctl enable httpd \
-    && dnf clean all \
-    && rm -rf /var/cache/*
 
 # ポートを公開
 EXPOSE 80
